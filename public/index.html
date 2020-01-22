@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="Store and upload your documents online"
+    />
+    <base href="%PUBLIC_URL%">
+    <script type="text/javascript">
+      var olc = function() {
+        var el = document.getElementById("login-captcha");
+        if(!el) return
+        grecaptcha.render(
+          el,
+          {
+            "sitekey": "6LcXYtEUAAAAAGz1zqaAf3PpN0g0l-49UbgIdx3B",
+            "tabIndex": "3",
+            "expired-callback": "recaptchaEXP"
+          }
+        )};
+      var recaptchaEXP = function() {
+        grecaptcha.reset()
+      };
+    </script>
+    <script src="https://www.google.com/recaptcha/api.js?onload=olc&render=explicit" async defer></script>
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <title>Kinarva</title>
+  </head>
+  <body style="background-color: #daeadb;">
+    <noscript>
+      You need to enable JavaScript to run this app. <a href="https://www.enable-javascript.com/" style="text-decoration: none;">Click me</a> to see how to enable it
+    </noscript>
+    <div id="root"></div>
+  </body>
+</html>
