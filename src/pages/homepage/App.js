@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import openEye from '../../icons/open-eye.svg'
-import closedEye from '../../icons/closed-eye.svg'
-import fetch from '../../utils/fetch'
+import jwtDecode from 'jwt-decode'
+import openEye from '../../icons/open-eye.svg';
+import closedEye from '../../icons/closed-eye.svg';
+import { fetchApi, refreshAccessToken } from '../../utils/fetch';
+import Loader from '../../components/loader';
 import './App.css';
 
-
-// TODO: when page loads call see if JWT is present. If yes, call refresh-token endpoint to see
-// if login is again needed. If not, then let the user login
 class App extends Component {
   constructor(props) {
     super(props);
@@ -14,8 +13,34 @@ class App extends Component {
       showPassword: false,
       noUsername: false,
       noPassword: false,
-      error: ''
+      error: '',
+      loading: true
     };
+  }
+
+  async componentDidMount() {
+    if (window.kinarvaStore && window.kinarvaStore.accessToken) {
+      try {
+        const decoded = jwtDecode(window.kinarvaStore.accessToken);
+        const currTime = new Date().getTime() / 1000;
+        if (currTime >= decoded.exp) {
+          const { token } = await refreshAccessToken();
+          window.kinarvaStore.accessToken = token;
+        }
+        this.props.history.push('/panel');
+      } catch(e) {
+        window.location.reload(true);
+      }
+    }
+    this.setState({
+      loading: false
+    })
+  }
+
+  componentWillUnmount() {
+    this.setState({
+      loading: true
+    })
   }
 
   showPass = () => {
@@ -58,7 +83,7 @@ class App extends Component {
       return
     }
 
-    fetch('/login', {
+    fetchApi('/login', {
       method: 'POST',
       body: JSON.stringify({
         username,
@@ -67,7 +92,7 @@ class App extends Component {
       })
     }, this.props.history)
     .then(res => {
-      window.accessToken = res.token
+      window.kinarvaStore.accessToken = res.token
       this.props.history.push('/panel')
     })
     .catch((e) => {
@@ -84,8 +109,8 @@ class App extends Component {
   }
 
   render() {
-    const { showPassword, noPassword, noUsername, error } = this.state;
-    return (
+    const { showPassword, noPassword, noUsername, error, loading } = this.state;
+    return loading ? <Loader /> : (
       <div className="App">
         <header className="App-header">
           <div className="App-logo">Kinarva.</div>

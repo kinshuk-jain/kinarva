@@ -13,51 +13,55 @@ async function checkStatus(response) {
   }
 }
 
+export function refreshAccessToken() {
+  return fetch('/refresh-token', {
+    method: 'POST',
+    mode: 'cors',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Requested-With': 'XMLHttpRequest',
+    }
+  })
+  .then(checkStatus)
+  .then(r => r.json())
+  .catch(e => {
+    window.kinarvaStore.accessToken = ''
+    window.location.href = '/';
+  });
+}
+
 async function refreshRequired(response, history) {
   const header = response.headers.get('WWW-Authenticate') || '';
   if(response.status === 401 && header.startsWith('Bearer')) {
-    const { token } = await fetch('/refresh-token', {
-      method: 'POST',
-      mode: 'cors',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Requested-With': 'XMLHttpRequest',
-      }
-    }).catch(e => {
-      history.push('/');
-    });
-    window.accessToken = token;
+    const { token } = await refreshAccessToken();
+    window.kinarvaStore.accessToken = token;
     return ''
   }
   return response
 }
 
-async function fetchApi(url, options, history) {
-  const headers = {
-    'Content-Type': 'application/json',
-    'X-Requested-With': 'XMLHttpRequest',
-    'Authorization': `Bearer ${window.accessToken}`,
-    ...options.headers
-  };
-
-  const requestOptions = {
+export async function fetchApi(url, options, history) {
+  const requestOptions = () => ({
     mode: 'cors',
     ...options,
-    headers
-  };
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Requested-With': 'XMLHttpRequest',
+      'Authorization': `Bearer ${window.kinarvaStore.accessToken}`,
+      ...options.headers
+    }
+  });
 
   const fullUrl = `${DOMAIN}${url}`
 
-  return fetch(fullUrl, requestOptions)
+  return fetch(fullUrl, requestOptions())
   .then(r => refreshRequired(r, history))
   .then(r => {
     if (!r) {
-      return fetch(fullUrl, requestOptions)
+      return fetch(fullUrl, requestOptions())
     }
     return r
   })
   .then(checkStatus)
   .then(r => r.json())
 }
-
-export default fetchApi;

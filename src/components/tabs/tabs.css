@@ -1,0 +1,47 @@
+.Tabs-List {
+  width: 100%;
+  background: #ebfbec;
+  display: inline-block;
+  overflow: auto;
+  white-space: nowrap;
+  box-shadow: 2px 2px 6px 0px rgba(239,239,239,1);
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;  /* Internet Explorer 10+ */
+}
+
+.Tabs-List::-webkit-scrollbar { /* WebKit */
+  width: 0;
+  height: 0;
+}
+
+.Tab-Item {
+  max-width: 200px;
+  margin: 0 30px;
+  padding: 5px;
+  display: inline-block;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  text-decoration: none;
+  color: black;
+}
+
+.Tab-Item > input {
+  display: none;
+}
+
+.Tab-Item > label {
+  cursor: pointer;
+  height: 30px;
+  line-height: 30px;
+  padding: 5px;
+}
+
+.Tab-Item > label:hover {
+  transform: scale(1.1, 1.1);
+}
+
+.Tab-Item > input:checked + label {
+  border-bottom: 2px solid #316ea0;
+}

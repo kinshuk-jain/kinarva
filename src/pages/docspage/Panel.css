@@ -1,0 +1,122 @@
+.Panel {
+  background: white;
+  border-radius: 5px;
+  width: 96%;
+  margin: 10px auto;
+  padding: 10px;
+}
+
+.Left-pane {
+  width: 24%;
+  display: inline-block;
+}
+
+.Right-pane {
+  margin-left: 1%;
+  box-sizing: border-box;
+  width: 75%;
+  display: inline-block;
+  padding-left: 10px;
+  vertical-align: top;
+  border: 1px solid #efefef;
+  border-radius: 4px;
+}
+
+.Panel-list {
+  border: 1px solid #efefef;
+}
+
+.Panel-logo {
+  pointer-events: none;
+  color: black;
+  font-size: 36px;
+  margin-left: 10px;
+  display: inline-block;
+}
+
+.Panel-menu {
+  display: inline-block;
+  min-width: 60px;
+  position: absolute;
+  right: 0;
+  box-shadow: 0px 5px 10px #efefef;
+  border: 1px solid #efefef;
+  border-radius: 5px;
+  padding: 6px;
+  height: 42px;
+  cursor: pointer;
+  outline: none;
+  background: white;
+}
+
+.Panel-menu:active {
+  transform: scale(0.98);
+}
+
+.Panel-menu:active,
+.Panel-menu:focus + .Panel-menu-dropdown {
+  display: inline-block;
+}
+
+.Panel-menu-image {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  left: 50%;
+  top: 50%;
+}
+
+.Panel-content {
+  margin-top: 20px;
+}
+
+.Panel-header {
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.Panel-empty-message {
+  position: relative;
+  font-size: 24px;
+  margin-left: -8%;
+  margin-top: 20%;
+  padding-bottom: 20%;
+  text-align: center;
+}
+
+.Panel-menu-dropdown {
+  position: absolute;
+  z-index: 10;
+  top: 110%;
+  right: 0;
+  background: white;
+  border: 1px solid #efefef;
+  border-radius: 5px;
+  display: none;
+}
+
+.Panel-menu-dropdown-item {
+  padding: 10px 5px;
+  width: 100px;
+  cursor: pointer;
+}
+
+.Panel-menu-dropdown-item:hover {
+  background: #ebfbec;
+}
+
+@media screen and (max-width: 720px) {
+  .Left-pane {
+    display: none;
+  }
+
+  .Right-pane {
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 320px) {
+  .Panel {
+    width: 320px;
+  }
+}
+

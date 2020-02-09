@@ -12,9 +12,9 @@ import App from './pages/homepage/App';
 
 const PanelComponent = lazy(() => import(/* webpackChunkName: "panel" */  './pages/docspage/Panel'));
 
-const Panel = () => (
+const Panel = (props) => (
   <Suspense fallback={<Loader />}>
-    <PanelComponent />
+    <PanelComponent {...props} />
   </Suspense>
 )
 
