@@ -53,11 +53,6 @@
   transform: scale(0.98);
 }
 
-.Panel-menu:active,
-.Panel-menu:focus + .Panel-menu-dropdown {
-  display: inline-block;
-}
-
 .Panel-menu-image {
   position: absolute;
   transform: translate(-50%, -50%);
@@ -91,11 +86,11 @@
   background: white;
   border: 1px solid #efefef;
   border-radius: 5px;
-  display: none;
+  display: inline-block;
 }
 
 .Panel-menu-dropdown-item {
-  padding: 10px 5px;
+  padding: 15px;
   width: 100px;
   cursor: pointer;
 }

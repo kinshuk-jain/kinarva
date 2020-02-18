@@ -4,6 +4,8 @@ import Loader from '../../components/loader';
 import gear from '../../icons/gear.svg'
 import { List, ListItem } from '../../components/list';
 import { Tabs, TabItem } from '../../components/tabs';
+import { Modal } from '../../components/modal';
+import { CreateUser } from './components/CreateUser'
 import './Panel.css'
 
 class PanelPage extends Component {
@@ -11,6 +13,7 @@ class PanelPage extends Component {
     super(props);
     this.state = {
       loading: true,
+      showCreateUserModal: false,
       data: {}
     };
   }
@@ -22,6 +25,25 @@ class PanelPage extends Component {
       }
     }
     return true;
+  }
+
+  createUserHandler = (e) => {
+    this.setState({
+      showCreateUserModal: !this.state.showCreateUserModal,
+      showMenu: false
+    })
+  }
+
+  closeCreateUserModal = () => {
+    this.setState({
+      showCreateUserModal: false
+    })
+  }
+
+  showMenu = () => {
+    this.setState({
+      showMenu: !this.state.showMenu
+    })
   }
 
   async componentDidMount() {
@@ -40,31 +62,37 @@ class PanelPage extends Component {
     }
   }
 
+  renderMenu() {
+    return (
+      <div className="Panel-menu-dropdown">
+        <div onClick={this.createUserHandler} className="Panel-menu-dropdown-item">
+          Create User
+        </div>
+        <div className="Panel-menu-dropdown-item">
+          Upload
+        </div>
+        <div className="Panel-menu-dropdown-item">
+          Load user
+        </div>
+        <div style={{ borderTop: '1px solid #efefef', width: '100%' }}/>
+        <div className="Panel-menu-dropdown-item">
+          Logout
+        </div>
+      </div>
+    );
+  }
+
   render() {
-    const { loading, data } = this.state;
+    const { loading, data, showCreateUserModal, showMenu } = this.state;
 
     return loading ? <Loader /> : (
       <div className="Panel">
         <div className="Panel-header">
           <div className="Panel-logo">Kinarva.</div>
-          <button className="Panel-menu">
+          <button className="Panel-menu" onClick={this.showMenu}>
             <img className="Panel-menu-image" src={gear} alt="menu" onClick={() => {}} />
           </button>
-          <div className="Panel-menu-dropdown">
-            <div className="Panel-menu-dropdown-item">
-              Create User
-            </div>
-            <div className="Panel-menu-dropdown-item">
-              Upload
-            </div>
-            <div className="Panel-menu-dropdown-item">
-              Load user
-            </div>
-            <div style={{ borderTop: '1px solid #efefef', width: '100%' }}/>
-            <div className="Panel-menu-dropdown-item">
-              Logout
-            </div>
-          </div>
+          {showMenu && this.renderMenu()}
         </div>
         <Tabs>
           <TabItem label="ABd" />
@@ -92,6 +120,11 @@ class PanelPage extends Component {
             }
           </div>
         </div>
+        {showCreateUserModal &&
+          <Modal onClose={this.closeCreateUserModal}>
+            <CreateUser />
+          </Modal>
+        }
       </div>
     );
   }
