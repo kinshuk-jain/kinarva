@@ -2,23 +2,51 @@
   position: absolute;
   left: 0;
   top: 0;
-  width: 100%;
-  height: 100%;
+  right: 0;
+  bottom: 0;
   background: #999;
+  z-index: 1;
 }
 
-/* .Modal-cross-button {
-
-} */
+.Modal-cross-button {
+  position: relative;
+  z-index: 1;
+  text-align: right;
+  font-size: 20px;
+  font-weight: bold;
+  padding-right: 20px;
+  padding-top: 15px;
+  cursor: pointer;
+}
 
 .Modal-container {
-  background: white;
+  background: #daeadb;
   position: absolute;
   width: 80%;
   height: 70%;
+  padding: 10px;
   margin: 0 auto;
   left: 50%;
   transform: translate(-50%, -50%);
   top: 50%;
   border-radius: 5px;
+}
+
+.Modal-content {
+  padding-top: 10px;
+  text-align: center;
+  position: relative;
+  top: 5%;
+}
+
+@media screen and (max-width: 720px) {
+  .Modal-container {
+    width: 100%;
+    height: 100%;
+  }
+
+  .Modal-parent-container {
+    background: transparent;
+    position: fixed;
+  }
 }

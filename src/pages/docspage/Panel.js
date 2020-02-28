@@ -5,7 +5,9 @@ import gear from '../../icons/gear.svg'
 import { List, ListItem } from '../../components/list';
 import { Tabs, TabItem } from '../../components/tabs';
 import { Modal } from '../../components/modal';
-import { CreateUser } from './components/CreateUser'
+import { CreateUser } from './components/CreateUser';
+import { UploadDoc } from './components/UploadDoc';
+import { LoadUser } from './components/LoadUser';
 import './Panel.css'
 
 class PanelPage extends Component {
@@ -14,6 +16,8 @@ class PanelPage extends Component {
     this.state = {
       loading: true,
       showCreateUserModal: false,
+      showUploadDocModal: false,
+      showLoadUserModal: false,
       data: {}
     };
   }
@@ -34,9 +38,35 @@ class PanelPage extends Component {
     })
   }
 
+  uploadDocHandler = (e) => {
+    this.setState({
+      showUploadDocModal: !this.state.showUploadDocModal,
+      showMenu: false
+    })
+  }
+
+  loadUserModalHandler = () => {
+    this.setState({
+      showLoadUserModal: !this.state.showLoadUserModal,
+      showMenu: false
+    })
+  }
+
+  closeUploadUserModal = () => {
+    this.setState({
+      showUploadDocModal: false
+    })
+  }
+
   closeCreateUserModal = () => {
     this.setState({
       showCreateUserModal: false
+    })
+  }
+
+  closeLoadUserModal = () => {
+    this.setState({
+      showLoadUserModal: false
     })
   }
 
@@ -68,10 +98,10 @@ class PanelPage extends Component {
         <div onClick={this.createUserHandler} className="Panel-menu-dropdown-item">
           Create User
         </div>
-        <div className="Panel-menu-dropdown-item">
+        <div onClick={this.uploadDocHandler} className="Panel-menu-dropdown-item">
           Upload
         </div>
-        <div className="Panel-menu-dropdown-item">
+        <div onClick={this.loadUserModalHandler} className="Panel-menu-dropdown-item">
           Load user
         </div>
         <div style={{ borderTop: '1px solid #efefef', width: '100%' }}/>
@@ -83,7 +113,16 @@ class PanelPage extends Component {
   }
 
   render() {
-    const { loading, data, showCreateUserModal, showMenu } = this.state;
+    const {
+      loading,
+      data,
+      showCreateUserModal,
+      showMenu,
+      showUploadDocModal,
+      showLoadUserModal
+    } = this.state;
+
+    const { history } = this.props;
 
     return loading ? <Loader /> : (
       <div className="Panel">
@@ -122,7 +161,17 @@ class PanelPage extends Component {
         </div>
         {showCreateUserModal &&
           <Modal onClose={this.closeCreateUserModal}>
-            <CreateUser />
+            <CreateUser history={history} />
+          </Modal>
+        }
+        {showUploadDocModal &&
+          <Modal onClose={this.closeUploadUserModal}>
+            <UploadDoc />
+          </Modal>
+        }
+        {showLoadUserModal &&
+          <Modal onClose={this.closeLoadUserModal}>
+            <LoadUser />
           </Modal>
         }
       </div>

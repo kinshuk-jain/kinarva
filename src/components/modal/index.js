@@ -12,9 +12,11 @@ export class Modal extends React.Component {
   render() {
     return (
       <div onClick={this.props.onClose} className="Modal-parent-container">
-        <div onClick={this.props.onClose} className="Modal-cross-button" />
         <div onClick={(e) => e.stopPropagation()} className="Modal-container">
-          {this.props.children}
+          <div onClick={this.props.onClose} className="Modal-cross-button">x</div>
+          <div className="Modal-content">
+            {this.props.children}
+          </div>
         </div>
       </div>
     );
