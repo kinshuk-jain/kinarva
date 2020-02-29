@@ -49,6 +49,7 @@
   text-decoration: none;
   color: #fff;
   padding: 10px;
+  cursor: pointer;
   outline: none;
   transition: background 250ms ease-in-out, 
                 transform 150ms ease;

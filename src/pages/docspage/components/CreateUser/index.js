@@ -6,7 +6,8 @@ export class CreateUser extends React.Component {
   state = {
     noUsername: false,
     noName: false,
-    noEmail: false
+    noEmail: false,
+    loading: false
   }
 
   handleName = (e) => {
@@ -38,7 +39,7 @@ export class CreateUser extends React.Component {
     const name = e.target.name.value;
     const username = e.target.username.value;
     const email = e.target.email.value;
-    const hasUpload = e.target.hasUpload.value === 'on' ? true : false;
+    const hasUpload = e.target.hasUpload.checked;
     if (!username || !name || !email) {
       this.setState({
         noEmail: email ? false : true,
@@ -47,20 +48,36 @@ export class CreateUser extends React.Component {
       })
       return;
     }
-    // fetchApi('/create-user', {
-    //   method: 'POST',
-    //   body: JSON.stringify({
-    //     username,
-    //     password,
-    //     captcha
-    //   })
-    // }, this.props.history)
+    this.setState({
+      loading: true
+    })
+    fetchApi('/create-user', {
+      method: 'POST',
+      body: JSON.stringify({
+        name,
+        userid: username,
+        email,
+        canUpload: hasUpload
+      })
+    }, this.props.history)
+    .then(() => {
+      this.setState({
+        loading: false,
+        message: 'User Successfully Created!!'
+      });
+    })
+    .catch((e) => {
+      this.setState({
+        loading: false,
+        message: e.response.error
+      });
+    })
   }
 
   render() {
-    const { noEmail, noName, noUsername } = this.state;
+    const { noEmail, noName, noUsername, loading, message } = this.state;
     return (
-      <form onSubmit={this.createUserHandler} method="POST">
+      !message ? (<form onSubmit={this.createUserHandler} method="POST">
         <div className="user-input-field">
           <p className="user-input-field-input">Create User</p>
         </div>
@@ -78,9 +95,18 @@ export class CreateUser extends React.Component {
           <p>Do you want to provide this user the permission to upload documents?</p>
         </div>
         <div className="user-input-field">
-          <button type="submit" className="user-input-field-button">Submit</button>
+          <button type="submit" className="user-input-field-button" disabled={loading}>Submit</button>
         </div>
-      </form>
+      </form>) : (
+        <div>
+          <div className="user-input-field">
+            <p className="user-input-field-input">{message}</p>
+          </div>
+          <div className="user-input-field">
+            <button onClick={this.props.onClose} className="user-input-field-button">Close</button>
+          </div>
+        </div>
+      )
     )
   }
 }

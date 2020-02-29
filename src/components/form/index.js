@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { FormInput } from './formInput';
 import './form.css';
 
-const FormSubmit = ({ className = '', buttonClass, submitButtonText = '' }) => (
+const FormSubmit = ({ className = '', submitButtonText = '' }) => (
   <div className="user-input-field">
     <button type="submit" className={className}>{submitButtonText}</button>
   </div>

@@ -1,4 +1,5 @@
-import 'whatwg-fetch'
+import 'whatwg-fetch';
+import { storage } from './storage'
 
 const DOMAIN = process.env.NODE_ENV === 'production' ? 'https://api.sharedocs.in' : 'http://localhost:8080';
 
@@ -25,7 +26,7 @@ export function refreshAccessToken() {
   .then(checkStatus)
   .then(r => r.json())
   .catch(e => {
-    window.kinarvaStore.accessToken = ''
+    storage.setItem('accessToken', '');
     window.location.href = '/';
   });
 }
@@ -34,7 +35,7 @@ async function refreshRequired(response, history) {
   const header = response.headers.get('WWW-Authenticate') || '';
   if(response.status === 401 && header.startsWith('Bearer')) {
     const { token } = await refreshAccessToken();
-    window.kinarvaStore.accessToken = token;
+    storage.setItem('accessToken', token);
     return ''
   }
   return response
@@ -47,7 +48,7 @@ export async function fetchApi(url, options, history) {
     headers: {
       'Content-Type': 'application/json',
       'X-Requested-With': 'XMLHttpRequest',
-      'Authorization': `Bearer ${window.kinarvaStore.accessToken}`,
+      'Authorization': `Bearer ${storage.getItem('accessToken')}`,
       ...options.headers
     }
   });

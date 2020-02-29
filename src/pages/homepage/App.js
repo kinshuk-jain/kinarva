@@ -3,6 +3,7 @@ import jwtDecode from 'jwt-decode'
 import openEye from '../../icons/open-eye.svg';
 import closedEye from '../../icons/closed-eye.svg';
 import { fetchApi, refreshAccessToken } from '../../utils/fetch';
+import { storage } from '../../utils/storage'
 import Loader from '../../components/loader';
 import './App.css';
 
@@ -19,13 +20,13 @@ class App extends Component {
   }
 
   async componentDidMount() {
-    if (window.kinarvaStore && window.kinarvaStore.accessToken) {
+    if (storage.getItem('accessToken')) {
       try {
-        const decoded = jwtDecode(window.kinarvaStore.accessToken);
+        const decoded = jwtDecode(storage.getItem('accessToken'));
         const currTime = new Date().getTime() / 1000;
         if (currTime >= decoded.exp) {
           const { token } = await refreshAccessToken();
-          window.kinarvaStore.accessToken = token;
+          storage.setItem('accessToken', token);
         }
         this.props.history.push('/panel');
       } catch(e) {
@@ -92,7 +93,7 @@ class App extends Component {
       })
     }, this.props.history)
     .then(res => {
-      window.kinarvaStore.accessToken = res.token
+      storage.setItem('accessToken', res.token);
       this.props.history.push('/panel')
     })
     .catch((e) => {

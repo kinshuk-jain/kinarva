@@ -7,6 +7,7 @@ import { Tabs, TabItem } from '../../components/tabs';
 import { Modal } from '../../components/modal';
 import { CreateUser } from './components/CreateUser';
 import { UploadDoc } from './components/UploadDoc';
+import { storage } from '../../utils/storage'
 import { LoadUser } from './components/LoadUser';
 import './Panel.css'
 
@@ -18,6 +19,7 @@ class PanelPage extends Component {
       showCreateUserModal: false,
       showUploadDocModal: false,
       showLoadUserModal: false,
+      showLogoutModal: false,
       data: {}
     };
   }
@@ -76,18 +78,44 @@ class PanelPage extends Component {
     })
   }
 
+  closeLogoutUserModal = () => {
+    this.setState({
+      showLogoutModal: false
+    });
+  }
+
+  logoutHandler = () => {
+    this.setState({
+      showLogoutModal: true,
+      showMenu: false
+    });
+
+    fetchApi('/logout', {
+      method: 'POST'
+    })
+    .then(() => {
+      storage.setItem('accessToken', '');
+      window.location.href = '/'
+    })
+    .catch((e) => {
+      this.setState({
+        logoutError: 'There was a problem logging you out. Please try again!'
+      });
+    })
+  }
+
   async componentDidMount() {
-    if (true || window.kinarvaStore && window.kinarvaStore.accessToken) {
+    if (storage.getItem('accessToken')) {
       try {
         // fetch doc data from backend and put it in state
         this.setState({
           loading: false
         })
       } catch(e) {
-        window.kinarvaStore.accessToken = '';
-        this.props.history.push('/');
+        /* failed to fetch doc data */
       }
     } else {
+      storage.setItem('accessToken', '');
       window.location.href = '/'
     }
   }
@@ -105,7 +133,7 @@ class PanelPage extends Component {
           Load user
         </div>
         <div style={{ borderTop: '1px solid #efefef', width: '100%' }}/>
-        <div className="Panel-menu-dropdown-item">
+        <div onClick={this.logoutHandler} className="Panel-menu-dropdown-item">
           Logout
         </div>
       </div>
@@ -119,7 +147,9 @@ class PanelPage extends Component {
       showCreateUserModal,
       showMenu,
       showUploadDocModal,
-      showLoadUserModal
+      showLoadUserModal,
+      showLogoutModal,
+      logoutError
     } = this.state;
 
     const { history } = this.props;
@@ -161,17 +191,27 @@ class PanelPage extends Component {
         </div>
         {showCreateUserModal &&
           <Modal onClose={this.closeCreateUserModal}>
-            <CreateUser history={history} />
+            <CreateUser onClose={this.closeCreateUserModal} history={history} />
           </Modal>
         }
         {showUploadDocModal &&
           <Modal onClose={this.closeUploadUserModal}>
-            <UploadDoc />
+            <UploadDoc onClose={this.closeUploadUserModal} />
           </Modal>
         }
         {showLoadUserModal &&
           <Modal onClose={this.closeLoadUserModal}>
-            <LoadUser />
+            <LoadUser onClose={this.closeLoadUserModal} />
+          </Modal>
+        }
+        {showLogoutModal &&
+          <Modal>
+            {logoutError ? (<div>
+              <div>{logoutError}</div>
+              <button className="Panel-logout-close-button" onClick={this.closeLogoutUserModal}>Close</button>
+            </div>) : (<div>
+              <Loader className="Panel-logout-loader" />
+            </div>)}
           </Modal>
         }
       </div>

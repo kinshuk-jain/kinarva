@@ -95,6 +95,22 @@
   cursor: pointer;
 }
 
+.Panel-logout-loader {
+  min-height: auto;
+}
+
+.Panel-logout-close-button {
+  cursor: pointer;
+  background: #316ea0;
+  padding: 10px 30px;
+  margin-top: 20px;
+  border: 1px solid #efefef;
+  font-size: 14px;
+  outline: none;
+  color: white;
+}
+
+
 .Panel-menu-dropdown-item:hover {
   background: #ebfbec;
 }
