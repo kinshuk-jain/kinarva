@@ -8,7 +8,7 @@ export const LoadUser = () => {
         <p className="user-input-field-input">Load User</p>
       </div>
       <div className="user-input-field">
-        <input placeholder="name" className="user-input-field-input" />
+        <input placeholder="name *" className="user-input-field-input" />
       </div>
       <div className="user-input-field">
         <button className="user-input-field-button">Submit</button>

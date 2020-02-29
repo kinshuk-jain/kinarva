@@ -9,7 +9,7 @@ export class UploadDoc extends React.Component {
           <p className="user-input-field-input">Upload User</p>
         </div>
         <div className="user-input-field">
-          <input placeholder="name" className="user-input-field-input" />
+          <input placeholder="name *" className="user-input-field-input" />
         </div>
         <div className="user-input-field">
           <select className="user-input-select">
