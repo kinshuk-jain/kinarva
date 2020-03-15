@@ -1,6 +1,7 @@
 import React from 'react';
 import '../common.css'
 import { fetchApi } from '../../../../utils/fetch';
+import { Spinner } from '../../../../components/spinner';
 
 export class CreateUser extends React.Component {
   state = {
@@ -82,27 +83,29 @@ export class CreateUser extends React.Component {
           <p className="user-input-field-input">Create User</p>
         </div>
         <div className="user-input-field">
-          <input onChange={this.handleName} name="name" placeholder="name *" className={`user-input-field-input ${noName ? 'error': ''}`} />
+          <input tabIndex="1" autoFocus onChange={this.handleName} name="name" placeholder="name *" className={`user-input-field-input ${noName ? 'error': ''}`} />
         </div>
         <div className="user-input-field">
-          <input onChange={this.handleUsername} name="username" placeholder="username *" className={`user-input-field-input ${noUsername ? 'error': ''}`} />
+          <input tabIndex="2" onChange={this.handleUsername} name="username" placeholder="username *" className={`user-input-field-input ${noUsername ? 'error': ''}`} />
         </div>
         <div className="user-input-field">
-          <input onChange={this.handleEmail} name="email" placeholder="email *" className={`user-input-field-input ${noEmail ? 'error': ''}`} />
+          <input tabIndex="3" onChange={this.handleEmail} name="email" placeholder="email *" className={`user-input-field-input ${noEmail ? 'error': ''}`} />
         </div>
         <div className="user-input-field">
-          <input name="hasUpload" type="checkbox" />
+          <input tabIndex="4" name="hasUpload" type="checkbox" />
           <p>Do you want to provide this user the permission to upload documents?</p>
         </div>
         <div className="user-input-field">
-          <button type="submit" className="user-input-field-button" disabled={loading}>Submit</button>
+          <button tabIndex="5" type="submit" className="user-input-field-button" disabled={loading}>
+            {loading ? <Spinner /> : 'Submit'}
+          </button>
         </div>
       </form>) : (
         <div>
           <div className="user-input-field">
             <p className="user-input-field-input">{message}</p>
           </div>
-          <div className="user-input-field">
+          <div tabIndex="1" className="user-input-field">
             <button onClick={this.props.onClose} className="user-input-field-button">Close</button>
           </div>
         </div>

@@ -15,9 +15,10 @@ async function checkStatus(response) {
 }
 
 export function refreshAccessToken() {
-  return fetch('/refresh-token', {
+  return fetch(`${DOMAIN}/refresh-token`, {
     method: 'POST',
     mode: 'cors',
+    credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
       'X-Requested-With': 'XMLHttpRequest',

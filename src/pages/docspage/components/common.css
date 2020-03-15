@@ -4,6 +4,7 @@
   flex-direction: row;
   align-items: center;
   justify-content: center;
+  position: relative;
 }
 
 .user-input-field-input {
@@ -11,7 +12,7 @@
   border-radius: 5px;
   border: 1px solid #efefef;
   outline: none;
-  width: 280px;
+  width: 260px;
   height: 30px;
   font-size: 16px;
   margin-bottom: 20px;
@@ -20,6 +21,52 @@
 
 .error {
   border: 1px solid red;
+}
+
+.user-suggestion-box {
+  background: white;
+  width: 300px;
+  border-top: 1px solid #efefef;
+  border-radius: 5px;
+  position: absolute;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  top: 50px;
+  z-index: 2;
+}
+
+.user-suggestion {
+  padding: 5px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.user-suggestion-active {
+  background: #efefef;
+}
+
+.user-suggestion-recent-searches {
+  font-size: 12px;
+  color: #2764ab;
+  text-align: left;
+  display: block;
+  padding: 10px 5px;
+}
+
+.load-user-spinner {
+  display: inline-block;
+  position: relative;
+  margin-left: 270px;
+  bottom: 34px;
+}
+
+.user-error-message {
+  font-size: 12px;
+  color: red;
+  width: 290px;
+  padding: 5px;
+  border-radius: 3px;
+  border: 1px solid #9f9f9f;
+  background-color: #fbf9c2;
 }
 
 .user-input-field-button {
@@ -37,10 +84,66 @@
   background: #2764ab;
 }
 
+.user-input-field-button:hover,
+.user-input-field-button:focus {
+  background: #0069ed;
+}
+
 .user-input-select {
   width: 300px;
   height: 50px;
   outline: none;
   font-size: 14px;
   margin-bottom: 20px;
+  border: none;
+}
+
+.user-input-select:focus {
+  border: 2px dotted #ccc;
+}
+
+input[type='file']:focus {
+  border: 1px dotted #ccc;
+}
+
+.FileList-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0;
+}
+
+.FileList-file-wrapper {
+  list-style: none;
+  font-size: 12px;
+  width: 300px;
+}
+
+.FileList-file-name {
+  text-align: left;
+  width: 250px;
+}
+
+.FileList-file-name div {
+  display: inline-block;
+}
+
+.FileList-file-name-cross {
+  text-align: right;
+  font-weight: bold;
+  cursor: pointer;
+  margin-left: 5px;
+}
+
+.FileList-file-name-label {
+  width: 80%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.FileList-file-progress {
+  width: 200px;
+  position: relative;
+  left: -50px;
 }

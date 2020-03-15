@@ -119,7 +119,7 @@ class App extends Component {
             {error}
           </div>
           <form className="App-form" onSubmit={this.submitForm} method="POST">
-            <input onChange={this.handleUsername} className={`App-input ${noUsername ? 'App-input-error' : ''}`} type="text" name="username" placeholder="Username" tabIndex="1" />
+            <input autoFocus onChange={this.handleUsername} className={`App-input ${noUsername ? 'App-input-error' : ''}`} type="text" name="username" placeholder="Username" tabIndex="1" />
             <div className="App-passContainer">
               <input onChange={this.handlePassword} className={`App-input App-password ${noPassword ? 'App-input-error' : ''}`} type={ showPassword ? 'text' : 'password' } name="password" tabIndex="2" placeholder="Password" />
               {

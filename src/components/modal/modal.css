@@ -30,6 +30,7 @@
   transform: translate(-50%, -50%);
   top: 50%;
   border-radius: 5px;
+  overflow: auto;
 }
 
 .Modal-content {

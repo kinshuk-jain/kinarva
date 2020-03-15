@@ -89,6 +89,10 @@
   background-color: #fbf9c2;
 }
 
+input:not([type='file']):focus {
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+}
+
 .App-show-message {
   display: flex;
 }
