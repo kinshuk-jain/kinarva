@@ -131,3 +131,9 @@
   }
 }
 
+@media screen and (max-width: 720px) {
+  .Panel {
+    padding: 0;
+  }
+}
+
