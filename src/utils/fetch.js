@@ -1,7 +1,7 @@
 import 'whatwg-fetch';
 import { storage } from './storage'
 
-const DOMAIN = process.env.NODE_ENV === 'production' ? 'https://api.sharedocs.in' : 'http://localhost:8080';
+const DOMAIN = process.env.REACT_APP_API_URL;
 
 async function checkStatus(response) {
   if (response.status >= 200 && response.status < 300) {

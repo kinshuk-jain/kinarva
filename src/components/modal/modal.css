@@ -24,6 +24,7 @@
   background: #daeadb;
   position: absolute;
   width: 80%;
+  max-width: 800px;
   height: 70%;
   padding: 10px;
   margin: 0 auto;

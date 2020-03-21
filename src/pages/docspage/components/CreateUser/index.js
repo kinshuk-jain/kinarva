@@ -80,7 +80,7 @@ export class CreateUser extends React.Component {
     return (
       !message ? (<form onSubmit={this.createUserHandler} method="POST">
         <div className="user-input-field">
-          <p className="user-input-field-input">Create User</p>
+          <p className="Modal-title">Create User</p>
         </div>
         <div className="user-input-field">
           <input tabIndex="1" autoFocus onChange={this.handleName} name="name" placeholder="name *" className={`user-input-field-input ${noName ? 'error': ''}`} />
@@ -93,7 +93,7 @@ export class CreateUser extends React.Component {
         </div>
         <div className="user-input-field">
           <input tabIndex="4" name="hasUpload" type="checkbox" />
-          <p>Do you want to provide this user the permission to upload documents?</p>
+          <p className="user-input-checkbox-text">Do you want to provide this user the permission to upload documents?</p>
         </div>
         <div className="user-input-field">
           <button tabIndex="5" type="submit" className="user-input-field-button" disabled={loading}>

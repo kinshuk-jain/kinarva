@@ -10,7 +10,8 @@ export class SearchUser extends React.Component {
     gainFocus: PropTypes.bool,
     onSubmit: PropTypes.func,
     tabIndex: PropTypes.string,
-    disabled: PropTypes.bool
+    disabled: PropTypes.bool,
+    className: PropTypes.string
   }
 
   state = {
@@ -47,30 +48,31 @@ export class SearchUser extends React.Component {
   onChangeHandler = (e) => {
     const prefix = e.target.value.trim();
     const { userList, fetchedWithPrefix } = this.state;
-    if(prefix.length >= 3) {
-      if (!userList.length || !prefix.startsWith(fetchedWithPrefix)) {
+
+    if (prefix.length >= 3 && (!userList.length || !prefix.startsWith(fetchedWithPrefix))) {
+      this.setState({
+        loading: true,
+        name: e.target.value
+      });
+      return fetchApi('/get-names', {
+        method: 'POST',
+        body: JSON.stringify({
+          prefix
+        })
+      })
+      .then(resp => {
         this.setState({
-          loading: true
-        });
-        fetchApi('/get-names', {
-          method: 'POST',
-          body: JSON.stringify({
-            prefix
-          })
+          userList: resp.suggestions,
+          fetchedWithPrefix: prefix,
+          filteredList: resp.suggestions.slice(0, 4),
+          loading: false,
+          expand: true
         })
-        .then(resp => {
-          this.setState({
-            userList: resp.suggestions,
-            fetchedWithPrefix: prefix,
-            filteredList: resp.suggestions.slice(4),
-            loading: false
-          })
-        }).catch(() => {
-          this.setState({
-            loading: false
-          })
+      }).catch(() => {
+        this.setState({
+          loading: false
         })
-      }
+      })
     }
     this.setState({
       filteredList: this.getFilteredList(prefix),
@@ -166,7 +168,7 @@ export class SearchUser extends React.Component {
 
   render() {
     const { name, filteredList, selectedKey, loading, expand } = this.state;
-    const { disabled, gainFocus, tabIndex } = this.props;
+    const { disabled, gainFocus, tabIndex, className } = this.props;
     const length = filteredList.length;
 
     return (
@@ -182,7 +184,7 @@ export class SearchUser extends React.Component {
           style={{ marginBottom: 0, paddingRight: '30px' }}
           onChange={this.onChangeHandler}
           placeholder="name *"
-          className="user-input-field-input"
+          className={`user-input-field-input ${className}`}
         />
         {loading && <div className="load-user-spinner"><Spinner /></div>}
         {expand && (length || this.recentSearches.length) ? (

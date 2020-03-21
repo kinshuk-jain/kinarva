@@ -47,7 +47,7 @@ export class LoadUser extends React.Component {
     return (
       <div>
         <div className="user-input-field">
-          <p className="user-input-field-input">Load User</p>
+          <p className="Modal-title">Load User</p>
         </div>
         {error && <div className="user-input-field">
           <p className="user-error-message">{error}</p>

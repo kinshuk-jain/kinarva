@@ -36,6 +36,7 @@
   height: 30px;
   line-height: 30px;
   padding: 5px;
+  display: inline-block;
 }
 
 .Tab-Item > label:hover {

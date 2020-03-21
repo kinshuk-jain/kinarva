@@ -1,42 +1,179 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { SearchUser } from '../SearchUser';
 import { storage } from '../../../../utils/storage';
 import { fetchApi } from '../../../../utils/fetch';
+import { Spinner } from '../../../../components/spinner';
 import '../common.css'
 
+const MAX_UPLOADABLE_FILES = 5;
+const FILE_SIZE_LIMIT = 25;
+
 export class UploadDoc extends React.Component {
+  static propTypes = {
+    onClose: PropTypes.func.isRequired,
+  }
+
   constructor(props) {
     super(props);
     this.state = {
-      error: window.File && window.FileReader && window.FileList ? '' : 'Your browser does not support file upload. Please use a different browser',
+      error: window.File && window.FileList ? '' : 'Your browser does not support file upload. Please use a different browser',
       filesUploaded: [],
-      uploadResponses: Array(5).fill(undefined)
+      uploadResponses: Array(MAX_UPLOADABLE_FILES).fill(undefined),
+      submitted: false,
+      successfulSubmit: false,
+      noSelectError: false,
+      noYearError: false,
+      noFileError: false,
+      noSearchError: false
     };
     this.progressBars = [];
+    this.yearInput = React.createRef();
+    this.fileTypeInput = React.createRef();
+    this.search = React.createRef();
+  }
+
+  static getDerivedStateFromError() {
+    this.progressBars = [];
+    return {
+      error: 'Something went wrong! Please reload the page and try again.',
+      filesUploaded: [],
+      uploadResponses: Array(MAX_UPLOADABLE_FILES).fill(undefined),
+      submitted: false,
+      successfulSubmit: false,
+      noSelectError: false,
+      noYearError: false,
+      noFileError: false,
+      noSearchError: false
+    };
   }
 
   componentWillUnmount() {
-    // if form has not been submitted
-    // abort xhr reqeusts and tell serveer to delete files
-    // if form submitted do nothing
+    const { filesUploaded } = this.state;
+    filesUploaded.forEach(f => {
+      if (f) {
+        f.xhr.abort();
+      }
+    });
+  }
+
+  submitData = () => {
+    const { username } = this.search.current.getSelectedData();
+    const year = this.yearInput.current.value;
+    const docType = this.fileTypeInput.current.value;
+    return fetchApi('/upload-file/submit', {
+      method: 'POST',
+      body: JSON.stringify({
+        username,
+        year,
+        docType
+      })
+    }).then(() => {
+        this.progressBars = [];
+        this.setState({
+          submitted: false,
+          successfulSubmit: true,
+          filesUploaded: [],
+          error: '',
+          uploadResponses: Array(MAX_UPLOADABLE_FILES).fill(undefined)
+        });
+        setTimeout(() => {
+          this.setState({
+            successfulSubmit: false
+          })
+        }, 5000);
+      }).catch(() => {
+        this.setState({
+          submitted: false,
+          error: 'Error submitting information. Please try again!'
+        })
+      })
   }
 
   submitHandler = () => {
-    // upload data to backend on submit
-    // do not stop loading till all files are loaded
-    // and data is submitted
-    // close modal after data is submitted
-    // abort submit also if files not uploaded and user closes modal
+    const { uploadResponses, filesUploaded } = this.state;
+    if (!window.File || !window.FileList) {
+      return;
+    }
+
+    if (
+        !filesUploaded.filter(v => !!v).length ||
+        !this.search.current.getSelectedData().username ||
+        !this.yearInput.current.value ||
+        !this.yearInput.current.value.trim() ||
+        !this.fileTypeInput.current.value
+      ) {
+      this.setState({
+        noFileError: !filesUploaded.filter(v => !!v).length ? true : false,
+        noYearError: (!this.yearInput.current.value || !this.yearInput.current.value.trim()) ? true : false,
+        noSearchError: !this.search.current.getSelectedData().username ? true : false,
+        noSelectError: !this.fileTypeInput.current.value ? true : false
+      });
+
+      setTimeout(() => {
+        this.setState({
+          noFileError: false,
+          noYearError: false,
+          noSearchError: false,
+          noSelectError: false
+        });
+      }, 5000);
+      return;
+    }
+
+    // check if any file could not be uploaded
+    if(uploadResponses.some(v => v === 'notok')) {
+      this.setState({
+        error: 'There was a problem with one or more of your files. Please remove that file or re-upload it before submitting'
+      });
+      return;
+    }
+
+    this.setState({
+      submitted: true
+    });
+
+    // if all files have been uploaded
+    if (filesUploaded.filter(v => !!v).length === uploadResponses.filter(v => v === 'ok').length) {
+      this.submitData();
+    } else {
+      // promisify all xhr and wait for their completion
+      // eslint-disable-next-line
+      Promise.all(filesUploaded.map(f => {
+        if(f === null || f === undefined || (f.xhr.status >= 200 && f.xhr.status < 300)) {
+          return Promise.resolve();
+        }
+        new Promise((res, rej) => {
+          f.xhr.onload = function() {
+            if(this.status >= 200 && this.status < 300) {
+              res(this.response);
+              return;
+            }
+            rej(this.response);
+          };
+          f.xhr.onerror = function() { rej(this.reponse); };
+        })
+      })).then(() => {
+        return this.submitData();
+      }).catch(() => {
+        this.setState({
+          submitted: false,
+          error: 'Something went wrong. Please try again!'
+        })
+      })
+    }
   }
 
   fileValidation = () => {
+    if (!window.File || !window.FileList) {
+      return;
+    }
     if (!this.fileInput) {
       this.setState({
         error: 'Technical error! Please try again'
       });
       return;
     }
-
     const { filesUploaded, uploadResponses } = this.state;
 
     // cannot upload same file twice
@@ -47,9 +184,9 @@ export class UploadDoc extends React.Component {
         return f.name !== file.name
       }));
 
-    if ((files.length + filesUploaded.length) > 5) {
+    if ((files.length + filesUploaded.length) > MAX_UPLOADABLE_FILES) {
       this.setState({
-        error: 'Too many files. Cannot upload more than 5 files at a time!'
+        error: `Too many files. Cannot upload more than ${MAX_UPLOADABLE_FILES} files at a time!`
       });
       return;
     }
@@ -59,15 +196,14 @@ export class UploadDoc extends React.Component {
 
     // TODO: before file uploading begins we must check whether access token
     // has not expired
-    // env vars
     for (let i = 0; i < files.length; i++) {
       // find position where file can go in filesUploaded
       let index = filesUploaded.findIndex(v => v === null || v === undefined);
       index = index > -1 ? index : filesUploaded.length;
-      // return if file size is more than 25MB
-      if(files[i].size > 25000000) {
+      // return if file size is more than FILE_SIZE_LIMIT in MB
+      if(files[i].size > FILE_SIZE_LIMIT * 1000000) {
         this.setState({
-          error: 'One or more files greater than 25MB in size!'
+          error: `One or more files greater than ${FILE_SIZE_LIMIT}MB in size!`
         });
         return;
       }
@@ -79,7 +215,7 @@ export class UploadDoc extends React.Component {
       // send file
       xhr = new XMLHttpRequest();
       xhr.timeout = 60000; // time in milliseconds
-      xhr.open('POST', 'http://localhost:8080/upload-file', true);
+      xhr.open('POST', `${process.env.REACT_APP_API_URL}/upload-file`, true);
       xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
       xhr.setRequestHeader('Authorization', `Bearer ${storage.getItem('accessToken')}`);
       xhr.upload.onprogress = ((key) => (e) => {
@@ -87,11 +223,11 @@ export class UploadDoc extends React.Component {
           this.progressBars[key].value = 100 * (e.loaded/e.total);
         }
       })(index);
-      xhr.upload.onloadend = ((key) => (e) => {
-        if (e.lengthComputable && e.loaded === e.total) {
+      xhr.onloadend = ((key) => (e) => {
+        const status = e.target.status;
+        if (status >= 200 && status < 300) {
           uploadResponses.splice(key, 1, 'ok');
-        }
-        else {
+        } else {
           uploadResponses.splice(key, 1, 'notok');
         }
         this.setState({
@@ -149,34 +285,51 @@ export class UploadDoc extends React.Component {
   }
 
   render() {
-    const { filesUploaded, error } = this.state;
+    const {
+      filesUploaded,
+      error,
+      submitted,
+      successfulSubmit,
+      noFileError,
+      noSearchError,
+      noSelectError,
+      noYearError
+    } = this.state;
     return (
       <div>
         <div className="user-input-field">
-          <p className="user-input-field-input">Upload User</p>
+          <p className="Modal-title">Upload Documents</p>
         </div>
-        {error && <div className="user-input-field">
-          <p className="user-error-message">{error}</p>
+        {(error || successfulSubmit) && <div className="user-input-field">
+          <p className={`user-error-message ${successfulSubmit ? 'user-successfully-uploaded' : ''}`}>{successfulSubmit ? 'Successfully Uploaded!' : error}</p>
         </div>}
         <div className="user-input-field">
-          <SearchUser ref={el => this.search = el} tabIndex="1" />
+          <SearchUser className={ noSearchError ? 'error' : '' } disabled={submitted} ref={this.search} tabIndex="1" />
         </div>
         <div className="user-input-field">
-          <select tabIndex="2" className="user-input-select">
+          <select disabled={submitted} ref={this.fileTypeInput} tabIndex="2" className={`user-input-select ${noSelectError ? 'error' : ''}`}>
+            <option value=''>Select report type</option>
             <option value='audit-report'>Audit report</option>
             <option value='finance-report'>Finance report</option>
             <option value='gullu-report'>Gullu report</option>
           </select>
         </div>
         <div className="user-input-field">
-          <input style={{ width: '280px' }} tabIndex="3" placeholder="year" className="user-input-field-input" />
+          <input
+            ref={this.yearInput}
+            disabled={submitted}
+            style={{ width: '280px' }}
+            tabIndex="3"
+            placeholder="year"
+            className={`user-input-field-input ${noYearError ? 'error' : ''}`}
+          />
         </div>
         <div className="user-input-field">
           <label
             htmlFor="file-upload"
-            className="File-upload-label"
+            className={`File-upload-label ${noFileError ? 'error' : ''}`}
           >
-            Upload Files <i>(Max 5, less than 25MB)</i>
+            Upload Files <i>{`(Max ${MAX_UPLOADABLE_FILES}, less than ${FILE_SIZE_LIMIT}MB)`}</i>
           </label>
           <input
             tabIndex="4"
@@ -187,6 +340,7 @@ export class UploadDoc extends React.Component {
             placeholder="upload"
             onChange={this.fileValidation}
             multiple
+            disabled={submitted}
           />
         </div>
         {
@@ -197,7 +351,9 @@ export class UploadDoc extends React.Component {
           })
         }
         <div className="user-input-field">
-          <button onClick={this.submitHandler} tabIndex="5" className="user-input-field-button">Submit</button>
+          <button onClick={this.submitHandler} tabIndex="5" className="user-input-field-button">
+            {submitted ? <Spinner /> : 'Submit'}
+          </button>
         </div>
       </div>
     )
