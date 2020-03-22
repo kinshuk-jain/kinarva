@@ -4,6 +4,7 @@ import { SearchUser } from '../SearchUser'
 import { storage } from '../../../../utils/storage'
 import { fetchApi } from '../../../../utils/fetch'
 import { Spinner } from '../../../../components/spinner'
+import { DISALLOWED_MIME_TYPES } from '../../../../constants'
 import '../common.css'
 
 const MAX_UPLOADABLE_FILES = 5
@@ -89,10 +90,12 @@ export class UploadDoc extends React.Component {
           })
         }, 5000)
       })
-      .catch(() => {
+      .catch((e) => {
         this.setState({
           submitted: false,
-          error: 'Error submitting information. Please try again!',
+          error:
+            e.response.error ||
+            'Error submitting information. Please try again!',
         })
       })
   }
@@ -230,6 +233,17 @@ export class UploadDoc extends React.Component {
       if (files[i].size > FILE_SIZE_LIMIT * 1000000) {
         this.setState({
           error: `One or more files greater than ${FILE_SIZE_LIMIT}MB in size!`,
+        })
+        return
+      }
+
+      if (
+        DISALLOWED_MIME_TYPES.some((mime) => files[i].type.search(mime) !== -1)
+      ) {
+        this.setState({
+          error: `${files[i].name.slice(
+            ((files[i].name.lastIndexOf('.') - 1) >>> 0) + 2
+          )} extension not allowed`,
         })
         return
       }
