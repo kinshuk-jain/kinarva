@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import './tabs.css'
 
 export const TabItem = (props) => (
@@ -8,8 +8,4 @@ export const TabItem = (props) => (
   </div>
 )
 
-export const Tabs = (props) => (
-  <div className="Tabs-List">
-    {props.children}
-  </div>
-)
+export const Tabs = (props) => <div className="Tabs-List">{props.children}</div>

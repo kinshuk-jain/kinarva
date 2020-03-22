@@ -18,7 +18,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "deploy": "cp ./config/prod/.env . && npm run build && serverless deploy"
+    "deploy": "cp ./config/prod/.env . && npm run build && serverless deploy",
+    "prettier": "npx prettier --write '**/*.js'"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -34,5 +35,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "prettier": "^2.0.1"
   }
 }

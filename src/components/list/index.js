@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import './list.css'
 
 export const ListItem = ({ children, onClick }) => (

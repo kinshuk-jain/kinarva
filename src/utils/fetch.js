@@ -1,16 +1,16 @@
-import 'whatwg-fetch';
+import 'whatwg-fetch'
 import { storage } from './storage'
 
-const DOMAIN = process.env.REACT_APP_API_URL;
+const DOMAIN = process.env.REACT_APP_API_URL
 
 async function checkStatus(response) {
   if (response.status >= 200 && response.status < 300) {
-    return response;
+    return response
   } else {
-    const error = new Error(response.statusText);
+    const error = new Error(response.statusText)
     error.status = response.status
-    error.response = await response.json();
-    throw error;
+    error.response = await response.json()
+    throw error
   }
 }
 
@@ -22,21 +22,21 @@ export function refreshAccessToken() {
     headers: {
       'Content-Type': 'application/json',
       'X-Requested-With': 'XMLHttpRequest',
-    }
+    },
   })
-  .then(checkStatus)
-  .then(r => r.json())
-  .catch(e => {
-    storage.setItem('accessToken', '');
-    window.location.href = '/';
-  });
+    .then(checkStatus)
+    .then((r) => r.json())
+    .catch((e) => {
+      storage.setItem('accessToken', '')
+      window.location.href = '/'
+    })
 }
 
 async function refreshRequired(response, history) {
-  const header = response.headers.get('WWW-Authenticate') || '';
-  if(response.status === 401 && header.startsWith('Bearer')) {
-    const { token } = await refreshAccessToken();
-    storage.setItem('accessToken', token);
+  const header = response.headers.get('WWW-Authenticate') || ''
+  if (response.status === 401 && header.startsWith('Bearer')) {
+    const { token } = await refreshAccessToken()
+    storage.setItem('accessToken', token)
     return ''
   }
   return response
@@ -49,21 +49,21 @@ export async function fetchApi(url, options, history) {
     headers: {
       'Content-Type': 'application/json',
       'X-Requested-With': 'XMLHttpRequest',
-      'Authorization': `Bearer ${storage.getItem('accessToken')}`,
-      ...options.headers
-    }
-  });
+      Authorization: `Bearer ${storage.getItem('accessToken')}`,
+      ...options.headers,
+    },
+  })
 
   const fullUrl = `${DOMAIN}${url}`
 
   return fetch(fullUrl, requestOptions())
-  .then(r => refreshRequired(r, history))
-  .then(r => {
-    if (!r) {
-      return fetch(fullUrl, requestOptions())
-    }
-    return r
-  })
-  .then(checkStatus)
-  .then(r => r.json())
+    .then((r) => refreshRequired(r, history))
+    .then((r) => {
+      if (!r) {
+        return fetch(fullUrl, requestOptions())
+      }
+      return r
+    })
+    .then(checkStatus)
+    .then((r) => r.json())
 }

@@ -1,5 +1,5 @@
-import React from 'react';
-import loaderGif from '../../icons/loader.gif';
+import React from 'react'
+import loaderGif from '../../icons/loader.gif'
 import './loader.css'
 
 const Loader = ({ className }) => (
@@ -8,4 +8,4 @@ const Loader = ({ className }) => (
   </div>
 )
 
-export default Loader;
+export default Loader

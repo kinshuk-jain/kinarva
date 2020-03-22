@@ -1,16 +1,16 @@
 function isSupported() {
   try {
-    const testKey = "__key__";
-    window.sessionStorage.setItem(testKey, testKey);
-    window.sessionStorage.removeItem(testKey);
-    return true;
+    const testKey = '__key__'
+    window.sessionStorage.setItem(testKey, testKey)
+    window.sessionStorage.removeItem(testKey)
+    return true
   } catch (e) {
-    return false;
+    return false
   }
 }
 
-function Store () {
-  this.store = {};
+function Store() {
+  this.store = {}
 
   this.getItem = (key) => {
     return this.store[key]

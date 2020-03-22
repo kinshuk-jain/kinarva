@@ -1,18 +1,18 @@
-import React from 'react';
+import React from 'react'
 import '../common.css'
-import { fetchApi } from '../../../../utils/fetch';
-import { Spinner } from '../../../../components/spinner';
+import { fetchApi } from '../../../../utils/fetch'
+import { Spinner } from '../../../../components/spinner'
 
 export class CreateUser extends React.Component {
   state = {
     noUsername: false,
     noName: false,
     noEmail: false,
-    loading: false
+    loading: false,
   }
 
   handleName = (e) => {
-    if(e.target.value.trim()) {
+    if (e.target.value.trim()) {
       this.setState({
         noName: false,
       })
@@ -20,7 +20,7 @@ export class CreateUser extends React.Component {
   }
 
   handleUsername = (e) => {
-    if(e.target.value.trim()) {
+    if (e.target.value.trim()) {
       this.setState({
         noUsername: false,
       })
@@ -28,7 +28,7 @@ export class CreateUser extends React.Component {
   }
 
   handleEmail = (e) => {
-    if(e.target.value.trim()) {
+    if (e.target.value.trim()) {
       this.setState({
         noEmail: false,
       })
@@ -36,80 +36,115 @@ export class CreateUser extends React.Component {
   }
 
   createUserHandler = (e) => {
-    e.preventDefault();
-    const name = e.target.name.value;
-    const username = e.target.username.value;
-    const email = e.target.email.value;
-    const hasUpload = e.target.hasUpload.checked;
+    e.preventDefault()
+    const name = e.target.name.value
+    const username = e.target.username.value
+    const email = e.target.email.value
+    const hasUpload = e.target.hasUpload.checked
     if (!username || !name || !email) {
       this.setState({
         noEmail: email ? false : true,
         noUsername: username ? false : true,
-        noName: name ? false : true
+        noName: name ? false : true,
       })
-      return;
+      return
     }
     this.setState({
-      loading: true
+      loading: true,
     })
-    fetchApi('/create-user', {
-      method: 'POST',
-      body: JSON.stringify({
-        name,
-        userid: username,
-        email,
-        canUpload: hasUpload
+    fetchApi(
+      '/create-user',
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          name,
+          userid: username,
+          email,
+          canUpload: hasUpload,
+        }),
+      },
+      this.props.history
+    )
+      .then(() => {
+        this.setState({
+          loading: false,
+          message: 'User Successfully Created!!',
+        })
       })
-    }, this.props.history)
-    .then(() => {
-      this.setState({
-        loading: false,
-        message: 'User Successfully Created!!'
-      });
-    })
-    .catch((e) => {
-      this.setState({
-        loading: false,
-        message: e.response.error
-      });
-    })
+      .catch((e) => {
+        this.setState({
+          loading: false,
+          message: e.response.error,
+        })
+      })
   }
 
   render() {
-    const { noEmail, noName, noUsername, loading, message } = this.state;
-    return (
-      !message ? (<form onSubmit={this.createUserHandler} method="POST">
+    const { noEmail, noName, noUsername, loading, message } = this.state
+    return !message ? (
+      <form onSubmit={this.createUserHandler} method="POST">
         <div className="user-input-field">
           <p className="Modal-title">Create User</p>
         </div>
         <div className="user-input-field">
-          <input tabIndex="1" autoFocus onChange={this.handleName} name="name" placeholder="name *" className={`user-input-field-input ${noName ? 'error': ''}`} />
+          <input
+            tabIndex="1"
+            autoFocus
+            onChange={this.handleName}
+            name="name"
+            placeholder="name *"
+            className={`user-input-field-input ${noName ? 'error' : ''}`}
+          />
         </div>
         <div className="user-input-field">
-          <input tabIndex="2" onChange={this.handleUsername} name="username" placeholder="username *" className={`user-input-field-input ${noUsername ? 'error': ''}`} />
+          <input
+            tabIndex="2"
+            onChange={this.handleUsername}
+            name="username"
+            placeholder="username *"
+            className={`user-input-field-input ${noUsername ? 'error' : ''}`}
+          />
         </div>
         <div className="user-input-field">
-          <input tabIndex="3" onChange={this.handleEmail} name="email" placeholder="email *" className={`user-input-field-input ${noEmail ? 'error': ''}`} />
+          <input
+            tabIndex="3"
+            onChange={this.handleEmail}
+            name="email"
+            placeholder="email *"
+            className={`user-input-field-input ${noEmail ? 'error' : ''}`}
+          />
         </div>
         <div className="user-input-field">
           <input tabIndex="4" name="hasUpload" type="checkbox" />
-          <p className="user-input-checkbox-text">Do you want to provide this user the permission to upload documents?</p>
+          <p className="user-input-checkbox-text">
+            Do you want to provide this user the permission to upload documents?
+          </p>
         </div>
         <div className="user-input-field">
-          <button tabIndex="5" type="submit" className="user-input-field-button" disabled={loading}>
+          <button
+            tabIndex="5"
+            type="submit"
+            className="user-input-field-button"
+            disabled={loading}
+          >
             {loading ? <Spinner /> : 'Submit'}
           </button>
         </div>
-      </form>) : (
-        <div>
-          <div className="user-input-field">
-            <p className="user-input-field-input">{message}</p>
-          </div>
-          <div tabIndex="1" className="user-input-field">
-            <button onClick={this.props.onClose} className="user-input-field-button">Close</button>
-          </div>
+      </form>
+    ) : (
+      <div>
+        <div className="user-input-field">
+          <p className="user-input-field-input">{message}</p>
         </div>
-      )
+        <div tabIndex="1" className="user-input-field">
+          <button
+            onClick={this.props.onClose}
+            className="user-input-field-button"
+          >
+            Close
+          </button>
+        </div>
+      </div>
     )
   }
 }

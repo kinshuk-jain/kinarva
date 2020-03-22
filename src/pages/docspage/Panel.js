@@ -1,107 +1,107 @@
 import React, { Component } from 'react'
-import { fetchApi } from '../../utils/fetch';
-import Loader from '../../components/loader';
+import { fetchApi } from '../../utils/fetch'
+import Loader from '../../components/loader'
 import gear from '../../icons/gear.svg'
-import { List, ListItem } from '../../components/list';
-import { Tabs, TabItem } from '../../components/tabs';
-import { Modal } from '../../components/modal';
-import { CreateUser } from './components/CreateUser';
-import { UploadDoc } from './components/UploadDoc';
+import { List, ListItem } from '../../components/list'
+import { Tabs, TabItem } from '../../components/tabs'
+import { Modal } from '../../components/modal'
+import { CreateUser } from './components/CreateUser'
+import { UploadDoc } from './components/UploadDoc'
 import { storage } from '../../utils/storage'
-import { LoadUser } from './components/LoadUser';
+import { LoadUser } from './components/LoadUser'
 import './Panel.css'
 
 class PanelPage extends Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       loading: true,
       showCreateUserModal: false,
       showUploadDocModal: false,
       showLoadUserModal: false,
       showLogoutModal: false,
-      data: {}
-    };
+      data: {},
+    }
   }
 
   isEmpty = (obj) => {
-    for(let prop in obj) {
-      if(obj.hasOwnProperty(prop)) {
-        return false;
+    for (let prop in obj) {
+      if (obj.hasOwnProperty(prop)) {
+        return false
       }
     }
-    return true;
+    return true
   }
 
   createUserHandler = (e) => {
     this.setState({
       showCreateUserModal: !this.state.showCreateUserModal,
-      showMenu: false
+      showMenu: false,
     })
   }
 
   uploadDocHandler = (e) => {
     this.setState({
       showUploadDocModal: !this.state.showUploadDocModal,
-      showMenu: false
+      showMenu: false,
     })
   }
 
   loadUserModalHandler = () => {
     this.setState({
       showLoadUserModal: !this.state.showLoadUserModal,
-      showMenu: false
+      showMenu: false,
     })
   }
 
   closeUploadUserModal = () => {
     this.setState({
-      showUploadDocModal: false
+      showUploadDocModal: false,
     })
   }
 
   closeCreateUserModal = () => {
     this.setState({
-      showCreateUserModal: false
+      showCreateUserModal: false,
     })
   }
 
   closeLoadUserModal = () => {
     this.setState({
-      showLoadUserModal: false
+      showLoadUserModal: false,
     })
   }
 
   showMenu = () => {
     this.setState({
-      showMenu: !this.state.showMenu
+      showMenu: !this.state.showMenu,
     })
   }
 
   closeLogoutUserModal = () => {
     this.setState({
-      showLogoutModal: false
-    });
+      showLogoutModal: false,
+    })
   }
 
   logoutHandler = () => {
     this.setState({
       showLogoutModal: true,
-      showMenu: false
-    });
+      showMenu: false,
+    })
 
     fetchApi('/logout', {
-      method: 'POST'
+      method: 'POST',
     })
-    .then(() => {
-      storage.setItem('accessToken', '');
-      window.location.href = '/'
-    })
-    .catch((e) => {
-      this.setState({
-        logoutError: 'There was a problem logging you out. Please try again!'
-      });
-    })
+      .then(() => {
+        storage.setItem('accessToken', '')
+        window.location.href = '/'
+      })
+      .catch((e) => {
+        this.setState({
+          logoutError: 'There was a problem logging you out. Please try again!',
+        })
+      })
   }
 
   async componentDidMount() {
@@ -109,13 +109,13 @@ class PanelPage extends Component {
       try {
         // fetch doc data from backend and put it in state
         this.setState({
-          loading: false
+          loading: false,
         })
-      } catch(e) {
+      } catch (e) {
         /* failed to fetch doc data */
       }
     } else {
-      storage.setItem('accessToken', '');
+      storage.setItem('accessToken', '')
       window.location.href = '/'
     }
   }
@@ -123,21 +123,30 @@ class PanelPage extends Component {
   renderMenu() {
     return (
       <div className="Panel-menu-dropdown">
-        <div onClick={this.createUserHandler} className="Panel-menu-dropdown-item">
+        <div
+          onClick={this.createUserHandler}
+          className="Panel-menu-dropdown-item"
+        >
           Create User
         </div>
-        <div onClick={this.uploadDocHandler} className="Panel-menu-dropdown-item">
+        <div
+          onClick={this.uploadDocHandler}
+          className="Panel-menu-dropdown-item"
+        >
           Upload
         </div>
-        <div onClick={this.loadUserModalHandler} className="Panel-menu-dropdown-item">
+        <div
+          onClick={this.loadUserModalHandler}
+          className="Panel-menu-dropdown-item"
+        >
           Load user
         </div>
-        <div style={{ borderTop: '1px solid #efefef', width: '100%' }}/>
+        <div style={{ borderTop: '1px solid #efefef', width: '100%' }} />
         <div onClick={this.logoutHandler} className="Panel-menu-dropdown-item">
           Logout
         </div>
       </div>
-    );
+    )
   }
 
   render() {
@@ -149,17 +158,24 @@ class PanelPage extends Component {
       showUploadDocModal,
       showLoadUserModal,
       showLogoutModal,
-      logoutError
-    } = this.state;
+      logoutError,
+    } = this.state
 
-    const { history } = this.props;
+    const { history } = this.props
 
-    return loading ? <Loader /> : (
+    return loading ? (
+      <Loader />
+    ) : (
       <div className="Panel">
         <div className="Panel-header">
           <div className="Panel-logo">Kinarva.</div>
           <button className="Panel-menu" onClick={this.showMenu}>
-            <img className="Panel-menu-image" src={gear} alt="menu" onClick={() => {}} />
+            <img
+              className="Panel-menu-image"
+              src={gear}
+              alt="menu"
+              onClick={() => {}}
+            />
           </button>
           {showMenu && this.renderMenu()}
         </div>
@@ -178,45 +194,50 @@ class PanelPage extends Component {
             </List>
           </div>
           <div className="Right-pane">
-            {
-              this.isEmpty(data)
-              ? (
-                  <div className="Panel-empty-message">
-                    Sorry there is nothing here right now
-                  </div>
-                )
-              : null
-            }
+            {this.isEmpty(data) ? (
+              <div className="Panel-empty-message">
+                Sorry there is nothing here right now
+              </div>
+            ) : null}
           </div>
         </div>
-        {showCreateUserModal &&
+        {showCreateUserModal && (
           <Modal onClose={this.closeCreateUserModal}>
             <CreateUser onClose={this.closeCreateUserModal} history={history} />
           </Modal>
-        }
-        {showUploadDocModal &&
+        )}
+        {showUploadDocModal && (
           <Modal onClose={this.closeUploadUserModal}>
             <UploadDoc onClose={this.closeUploadUserModal} />
           </Modal>
-        }
-        {showLoadUserModal &&
+        )}
+        {showLoadUserModal && (
           <Modal onClose={this.closeLoadUserModal}>
             <LoadUser onClose={this.closeLoadUserModal} />
           </Modal>
-        }
-        {showLogoutModal &&
+        )}
+        {showLogoutModal && (
           <Modal>
-            {logoutError ? (<div>
-              <div>{logoutError}</div>
-              <button className="Panel-logout-close-button" onClick={this.closeLogoutUserModal}>Close</button>
-            </div>) : (<div>
-              <Loader className="Panel-logout-loader" />
-            </div>)}
+            {logoutError ? (
+              <div>
+                <div>{logoutError}</div>
+                <button
+                  className="Panel-logout-close-button"
+                  onClick={this.closeLogoutUserModal}
+                >
+                  Close
+                </button>
+              </div>
+            ) : (
+              <div>
+                <Loader className="Panel-logout-loader" />
+              </div>
+            )}
           </Modal>
-        }
+        )}
       </div>
-    );
+    )
   }
 }
 
-export default PanelPage;
+export default PanelPage
