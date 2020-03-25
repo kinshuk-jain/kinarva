@@ -8,6 +8,7 @@ import '../common.css'
 export class LoadUser extends React.Component {
   static propTypes = {
     onClose: PropTypes.func.isRequired,
+    setData: PropTypes.func.isRequired
   }
 
   state = {
@@ -30,9 +31,8 @@ export class LoadUser extends React.Component {
         username,
       }),
     })
-      .then((resp) => {
-        console.log(resp)
-        // TODO: set results for panel page
+      .then((r) => {
+        this.props.setData(r.results)
         this.props.onClose()
       })
       .catch(() => {

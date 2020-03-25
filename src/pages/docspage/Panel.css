@@ -4,19 +4,19 @@
   width: 96%;
   margin: 10px auto;
   padding: 10px;
+  min-height: 95vh;
 }
 
 .Left-pane {
-  width: 24%;
+  width: 16%;
   display: inline-block;
 }
 
 .Right-pane {
   margin-left: 1%;
   box-sizing: border-box;
-  width: 75%;
+  width: 83%;
   display: inline-block;
-  padding-left: 10px;
   vertical-align: top;
   border: 1px solid #efefef;
   border-radius: 4px;
@@ -99,6 +99,10 @@
   min-height: auto;
 }
 
+.noBorder {
+  border: none;
+}
+
 .Panel-logout-close-button {
   cursor: pointer;
   background: #316ea0;
@@ -122,6 +126,11 @@
 
   .Right-pane {
     width: 100%;
+    margin: 0;
+  }
+
+  .Panel {
+    padding: 0;
   }
 }
 
@@ -130,10 +139,3 @@
     width: 320px;
   }
 }
-
-@media screen and (max-width: 720px) {
-  .Panel {
-    padding: 0;
-  }
-}
-

@@ -1,0 +1,202 @@
+.File-container {
+  margin: 10px 0;
+  font-size: 14px;
+}
+
+.File-data {
+  cursor: pointer;
+  padding: 10px 0 10px 5px;
+  border-bottom: 1px solid #efefef;
+  color: #242424;
+  vertical-align: top;
+  position: relative;
+}
+
+.sticky {
+  position: fixed;
+  top: 0;
+  width: 79.3%;
+}
+
+.File-data-title.sticky + .File-data-container {
+  padding-top: 32px;
+}
+
+.File-data-title {
+  border-bottom: 1px solid #efefef;
+  padding-bottom: 10px;
+  padding-left: 5px;
+  background: white;
+  font-weight: 500;
+}
+
+.File-data:hover {
+  background: #f6f6f6;
+}
+
+.File-data-name {
+  width: 40%;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  display: inline-block;
+  padding-right: 5px;
+}
+
+.File-data-type {
+  display: inline-block;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  width: 19%;
+}
+
+.File-data-size {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  display: inline-block;
+  width: 10%;
+}
+
+.File-data-createdBy {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  display: inline-block;
+  width: 30%;
+}
+
+.File-metadata {
+  color: #787878;
+  font-style: italic;
+  padding: 5px 0;
+  font-size: 12px;
+}
+
+.File-data-label {
+  display: none;
+  color: #787878;
+  font-size: 12px;
+}
+
+.File-metadata-label {
+  display: inline-block;
+  width: 33%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.File-info-label {
+  display: none;
+}
+
+@media screen and (max-width: 720px) {
+  .sticky {
+    width: 95%;
+  }
+
+  .File-metadata {
+    display: none;
+  }
+
+  .File-metadata-label {
+    display: block;
+    width: 100%;
+    font-style: normal;
+    white-space: normal;
+  }
+  
+  .File-metadata-label span {
+    display: block;
+  }
+
+  .File-metadata-label span:nth-child(2) {
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: #242424;
+  }
+
+  .File-data-label {
+    display: block;
+  }
+
+  .File-info-label {
+    display: inline-block;
+    position: absolute;
+    right: 9px;
+    bottom: 9px;
+  }
+
+  .File-info-label span {
+    padding: 0px 7px;
+    border-radius: 50%;
+    background: #00578a;
+    color: white;
+    font-weight: bold;
+  }
+
+  input:checked + div {
+    display: none;
+  }
+
+  input:checked + div + .File-metadata {
+    display: inline-block;
+  }
+
+  .File-data-title {
+    display: none;
+  }
+
+  .File-data {
+    width: 46%;
+    padding-bottom: 46%;
+    height: 0;
+    border: 1px solid #efefef;
+    display: inline-block;
+    margin: 1%;
+  }
+
+  .File-data-title.sticky + .File-data-container {
+    padding-top: 0;
+  }
+
+  .File-data-name {
+    display: block;
+    margin-bottom: 8px;
+    width: 100%;
+  }
+  
+  .File-data-type {
+    width: 50%;
+  }
+  
+  .File-data-size {
+    width: 40%;
+  }
+  
+  .File-data-createdBy {
+    display: block;
+    margin-bottom: 8px;
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 370px) {
+  .File-data {
+    width: 45%;
+    padding-bottom: 45%;
+  }
+}
+
+@media screen and (max-width: 320px) {
+  .sticky {
+    width: 320px;
+  }
+
+  .File-data {
+    width: 44%;
+    padding-bottom: 44%;
+  }
+}

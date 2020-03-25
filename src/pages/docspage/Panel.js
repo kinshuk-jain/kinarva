@@ -9,6 +9,7 @@ import { CreateUser } from './components/CreateUser'
 import { UploadDoc } from './components/UploadDoc'
 import { storage } from '../../utils/storage'
 import { LoadUser } from './components/LoadUser'
+import { FileInfo } from './components/FileInfo'
 import './Panel.css'
 
 class PanelPage extends Component {
@@ -20,7 +21,7 @@ class PanelPage extends Component {
       showUploadDocModal: false,
       showLoadUserModal: false,
       showLogoutModal: false,
-      data: {},
+      data: [],
     }
   }
 
@@ -75,6 +76,12 @@ class PanelPage extends Component {
   showMenu = () => {
     this.setState({
       showMenu: !this.state.showMenu,
+    })
+  }
+
+  setData = (data) => {
+    this.setState({
+      data
     })
   }
 
@@ -152,7 +159,7 @@ class PanelPage extends Component {
   render() {
     const {
       loading,
-      data,
+      data = [],
       showCreateUserModal,
       showMenu,
       showUploadDocModal,
@@ -180,9 +187,9 @@ class PanelPage extends Component {
           {showMenu && this.renderMenu()}
         </div>
         <Tabs>
-          <TabItem label="ABd" />
-          <TabItem label="ccc" />
-          <TabItem label="bbb" />
+          <TabItem label="Audit Report" />
+          <TabItem label="Financial Report" />
+          <TabItem label="Income Tax Return" />
           <TabItem label="ddd" />
         </Tabs>
         <div className="Panel-content">
@@ -193,12 +200,12 @@ class PanelPage extends Component {
               <ListItem> Guddu </ListItem>
             </List>
           </div>
-          <div className="Right-pane">
+          <div className={`Right-pane ${data.length ? 'noBorder' : ''}`}>
             {this.isEmpty(data) ? (
               <div className="Panel-empty-message">
                 Sorry there is nothing here right now
               </div>
-            ) : null}
+            ) : <FileInfo data={data} />}
           </div>
         </div>
         {showCreateUserModal && (
@@ -213,7 +220,7 @@ class PanelPage extends Component {
         )}
         {showLoadUserModal && (
           <Modal onClose={this.closeLoadUserModal}>
-            <LoadUser onClose={this.closeLoadUserModal} />
+            <LoadUser setData={this.setData} onClose={this.closeLoadUserModal} />
           </Modal>
         )}
         {showLogoutModal && (

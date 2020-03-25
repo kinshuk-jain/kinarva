@@ -74,7 +74,7 @@ export class CreateUser extends React.Component {
       .catch((e) => {
         this.setState({
           loading: false,
-          message: e.response.error,
+          message: e.response ? e.response.error : 'Something went wrong! Please try again',
         })
       })
   }
