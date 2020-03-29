@@ -11,6 +11,14 @@ export class CreateUser extends React.Component {
     loading: false,
   }
 
+  componentDidMount() {
+    this._isMounted = true
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false
+  }
+
   handleName = (e) => {
     if (e.target.value.trim()) {
       this.setState({
@@ -66,13 +74,13 @@ export class CreateUser extends React.Component {
       this.props.history
     )
       .then(() => {
-        this.setState({
+        this._isMounted && this.setState({
           loading: false,
           message: 'User Successfully Created!!',
         })
       })
       .catch((e) => {
-        this.setState({
+        this._isMounted && this.setState({
           loading: false,
           message: e.response ? e.response.error : 'Something went wrong! Please try again',
         })

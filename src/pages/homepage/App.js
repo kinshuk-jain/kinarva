@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
-import jwtDecode from 'jwt-decode'
 import openEye from '../../icons/open-eye.svg'
 import closedEye from '../../icons/closed-eye.svg'
-import { fetchApi, refreshAccessToken } from '../../utils/fetch'
+import { fetchApi } from '../../utils/fetch'
 import { storage } from '../../utils/storage'
+import { refreshTokenOnExpiry } from '../../utils/refresh-token-on-expiry'
 import Loader from '../../components/loader'
 import './App.css'
 
@@ -20,19 +20,9 @@ class App extends Component {
   }
 
   async componentDidMount() {
-    if (storage.getItem('accessToken')) {
-      try {
-        const decoded = jwtDecode(storage.getItem('accessToken'))
-        const currTime = new Date().getTime() / 1000
-        if (currTime >= decoded.exp) {
-          const { token } = await refreshAccessToken()
-          storage.setItem('accessToken', token)
-        }
-        this.props.history.push('/panel')
-      } catch (e) {
-        window.location.reload(true)
-      }
-    }
+    await refreshTokenOnExpiry(() => {
+      this.props.history.push('/panel')
+    })
     this.setState({
       loading: false,
     })

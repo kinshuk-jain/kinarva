@@ -8,6 +8,7 @@ import { Modal } from '../../components/modal'
 import { CreateUser } from './components/CreateUser'
 import { UploadDoc } from './components/UploadDoc'
 import { storage } from '../../utils/storage'
+import { refreshTokenOnExpiry } from '../../utils/refresh-token-on-expiry'
 import { LoadUser } from './components/LoadUser'
 import { FileInfo } from './components/FileInfo'
 import './Panel.css'
@@ -112,19 +113,12 @@ class PanelPage extends Component {
   }
 
   async componentDidMount() {
-    if (storage.getItem('accessToken')) {
-      try {
-        // fetch doc data from backend and put it in state
-        this.setState({
-          loading: false,
-        })
-      } catch (e) {
-        /* failed to fetch doc data */
-      }
-    } else {
-      storage.setItem('accessToken', '')
-      window.location.href = '/'
-    }
+    await refreshTokenOnExpiry(() => {
+      // TODO: fetch doc data from backend and put it in state
+      this.setState({
+        loading: false,
+      })
+    })
   }
 
   renderMenu() {

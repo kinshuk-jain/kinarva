@@ -16,6 +16,14 @@ export class LoadUser extends React.Component {
     loading: false,
   }
 
+  componentDidMount() {
+    this._isMounted = true
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false
+  }
+
   onSubmit = (username = '') => {
     this.setState({
       loading: true,
@@ -32,11 +40,13 @@ export class LoadUser extends React.Component {
       }),
     })
       .then((r) => {
-        this.props.setData(r.results)
-        this.props.onClose()
+        if (this._isMounted){
+          this.props.setData(r.results)
+          this.props.onClose()
+        }
       })
       .catch(() => {
-        this.setState({
+        this._isMounted && this.setState({
           loading: false,
           error: 'Could not load user. Please try again',
         })

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { SearchUser } from '../SearchUser'
 import { storage } from '../../../../utils/storage'
 import { fetchApi } from '../../../../utils/fetch'
+import { refreshTokenOnExpiry } from '../../../../utils/refresh-token-on-expiry'
 import { Spinner } from '../../../../components/spinner'
 import { DISALLOWED_MIME_TYPES } from '../../../../constants'
 import '../common.css'
@@ -17,6 +18,7 @@ export class UploadDoc extends React.Component {
 
   constructor(props) {
     super(props)
+    this._isMounted = false
     this.state = {
       error:
         window.File && window.FileList
@@ -52,6 +54,10 @@ export class UploadDoc extends React.Component {
     }
   }
 
+  componentDidMount() {
+    this._isMounted = true
+  }
+
   componentWillUnmount() {
     const { filesUploaded } = this.state
     filesUploaded.forEach((f) => {
@@ -59,6 +65,7 @@ export class UploadDoc extends React.Component {
         f.xhr.abort()
       }
     })
+    this._isMounted = false
   }
 
   submitData = () => {
@@ -77,7 +84,7 @@ export class UploadDoc extends React.Component {
     })
       .then(() => {
         this.progressBars = []
-        this.setState({
+        this._isMounted && this.setState({
           submitted: false,
           successfulSubmit: true,
           filesUploaded: [],
@@ -85,13 +92,13 @@ export class UploadDoc extends React.Component {
           uploadResponses: Array(MAX_UPLOADABLE_FILES).fill(undefined),
         })
         setTimeout(() => {
-          this.setState({
+          this._isMounted && this.setState({
             successfulSubmit: false,
           })
         }, 5000)
       })
       .catch((e) => {
-        this.setState({
+        this._isMounted && this.setState({
           submitted: false,
           error:
             e.response.error ||
@@ -126,7 +133,7 @@ export class UploadDoc extends React.Component {
       })
 
       setTimeout(() => {
-        this.setState({
+        this._isMounted && this.setState({
           noFileError: false,
           noYearError: false,
           noSearchError: false,
@@ -185,7 +192,7 @@ export class UploadDoc extends React.Component {
           return this.submitData()
         })
         .catch(() => {
-          this.setState({
+          this._isMounted && this.setState({
             submitted: false,
             error: 'Something went wrong. Please try again!',
           })
@@ -193,7 +200,7 @@ export class UploadDoc extends React.Component {
     }
   }
 
-  fileValidation = () => {
+  fileValidation = async () => {
     if (!window.File || !window.FileList) {
       return
     }
@@ -223,8 +230,8 @@ export class UploadDoc extends React.Component {
     let formData
     let xhr
 
-    // TODO: before file uploading begins we must check whether access token
-    // has not expired
+    await refreshTokenOnExpiry()
+
     for (let i = 0; i < files.length; i++) {
       // find position where file can go in filesUploaded
       let index = filesUploaded.findIndex((v) => v === null || v === undefined)
@@ -273,7 +280,7 @@ export class UploadDoc extends React.Component {
         } else {
           uploadResponses.splice(key, 1, 'notok')
         }
-        this.setState({
+        this._isMounted && this.setState({
           uploadResponses,
         })
       })(index)

@@ -29,6 +29,11 @@ export class SearchUser extends React.Component {
 
   componentDidMount() {
     this.recentSearches = JSON.parse(storage.getItem('recentLoadUser')) || []
+    this._isMounted = true
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false
   }
 
   setRecentSearches(obj) {
@@ -67,7 +72,7 @@ export class SearchUser extends React.Component {
         }),
       })
         .then((resp) => {
-          this.setState({
+          this._isMounted && this.setState({
             userList: resp.suggestions,
             fetchedWithPrefix: prefix,
             filteredList: resp.suggestions.slice(0, 4),
@@ -76,7 +81,7 @@ export class SearchUser extends React.Component {
           })
         })
         .catch(() => {
-          this.setState({
+          this._isMounted && this.setState({
             loading: false,
           })
         })
