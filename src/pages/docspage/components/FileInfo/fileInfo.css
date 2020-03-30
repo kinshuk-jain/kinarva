@@ -28,6 +28,7 @@
   padding-left: 5px;
   background: white;
   font-weight: 500;
+  z-index: 2;
 }
 
 .File-data:hover {

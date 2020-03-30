@@ -1,15 +1,17 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { storage } from '../../../../utils/storage'
 import supportsPassive from '../../../../utils/passive-events'
 import './fileInfo.css'
 
 export class FileInfo extends React.Component {
   static propTypes = {
-    data: PropTypes.arrayOf(PropTypes.object)
+    data: PropTypes.arrayOf(PropTypes.object),
+    showFile: PropTypes.func.isRequired
   }
 
   state = {
-    sticky: false
+    sticky: false,
   }
 
   componentDidMount() {
@@ -52,9 +54,29 @@ export class FileInfo extends React.Component {
     return new Date(+dateStr).toUTCString()
   }
 
+  fileDownloadHandler = (docid) => {
+    fetch(`http://localhost:8090/download?q=${docid}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+        Authorization: `Bearer ${storage.getItem('accessToken')}`,
+      }
+    })
+    .then(r => r.blob())
+    .then(blob => {
+      var newBlob = new Blob([blob], {type: blob.type})
+      if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+        window.navigator.msSaveOrOpenBlob(newBlob);
+        return;
+      }
+      const iframeSrc = window.URL.createObjectURL(newBlob);
+      this.props.showFile(iframeSrc)
+    })
+  }
+
   renderFile(f = {}, i) {
     return (
-      <div className="File-data" key={i}>
+      <div className="File-data" key={i} onClick={() => this.fileDownloadHandler(f.docid)}>
         <label className="File-info-label" htmlFor={`info-label-${i}`}>
           <span>i</span>
         </label>

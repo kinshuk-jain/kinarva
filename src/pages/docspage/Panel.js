@@ -23,6 +23,7 @@ class PanelPage extends Component {
       showLoadUserModal: false,
       showLogoutModal: false,
       data: [],
+      iframeSrc: ''
     }
   }
 
@@ -56,9 +57,22 @@ class PanelPage extends Component {
     })
   }
 
+  iframeModalHandler = (iframeSrc = '') => {
+    this.setState({
+      iframeSrc,
+      showMenu: false,
+    })
+  }
+
   closeUploadUserModal = () => {
     this.setState({
       showUploadDocModal: false,
+    })
+  }
+
+  closeIframeModal = () => {
+    this.setState({
+      iframeSrc: '',
     })
   }
 
@@ -160,6 +174,7 @@ class PanelPage extends Component {
       showLoadUserModal,
       showLogoutModal,
       logoutError,
+      iframeSrc,
     } = this.state
 
     const { history } = this.props
@@ -199,7 +214,7 @@ class PanelPage extends Component {
               <div className="Panel-empty-message">
                 Sorry there is nothing here right now
               </div>
-            ) : <FileInfo data={data} />}
+            ) : <FileInfo data={data} showFile={this.iframeModalHandler} />}
           </div>
         </div>
         {showCreateUserModal && (
@@ -236,6 +251,13 @@ class PanelPage extends Component {
             )}
           </Modal>
         )}
+        {
+          iframeSrc && (
+            <Modal fullModal onClose={this.closeIframeModal}>
+              <iframe className="Panel-File-View-iframe" src={iframeSrc} />
+            </Modal>
+          )
+        }
       </div>
     )
   }
