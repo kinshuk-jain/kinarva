@@ -4,7 +4,6 @@
 }
 
 .File-data {
-  cursor: pointer;
   padding: 10px 0 10px 5px;
   border-bottom: 1px solid #efefef;
   color: #242424;
@@ -100,6 +99,8 @@
 
   .File-metadata {
     display: none;
+    position: absolute;
+    top: 0;
   }
 
   .File-metadata-label {

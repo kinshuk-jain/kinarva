@@ -254,7 +254,9 @@ class PanelPage extends Component {
         {
           iframeSrc && (
             <Modal fullModal onClose={this.closeIframeModal}>
-              <iframe className="Panel-File-View-iframe" src={iframeSrc} />
+              <div>
+                <iframe className="Panel-File-View-iframe" href={iframeSrc} />
+              </div>
             </Modal>
           )
         }

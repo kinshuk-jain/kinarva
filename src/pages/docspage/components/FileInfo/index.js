@@ -54,7 +54,7 @@ export class FileInfo extends React.Component {
     return new Date(+dateStr).toUTCString()
   }
 
-  fileDownloadHandler = (docid) => {
+  fileDownloadHandler = (docid, name) => {
     fetch(`http://localhost:8090/download?q=${docid}`, {
       headers: {
         'Content-Type': 'application/json',
@@ -64,7 +64,7 @@ export class FileInfo extends React.Component {
     })
     .then(r => r.blob())
     .then(blob => {
-      var newBlob = new Blob([blob], {type: blob.type})
+      const newBlob = new Blob([blob], {type: blob.type})
       if (window.navigator && window.navigator.msSaveOrOpenBlob) {
         window.navigator.msSaveOrOpenBlob(newBlob);
         return;
@@ -76,12 +76,12 @@ export class FileInfo extends React.Component {
 
   renderFile(f = {}, i) {
     return (
-      <div className="File-data" key={i} onClick={() => this.fileDownloadHandler(f.docid)}>
+      <div className="File-data" key={i}>
         <label className="File-info-label" htmlFor={`info-label-${i}`}>
           <span>i</span>
         </label>
         <input style={{ display: 'none' }} type="checkbox" id={`info-label-${i}`} />
-        <div>
+        <div style={{ cursor: 'pointer' }} onClick={() => this.fileDownloadHandler(f.docid, f.docName)}>
           <span className="File-data-label">Name</span>
           <span title={f.docName} className="File-data-name">{f.docName || 'N/A'}</span>
           <span className="File-data-label">Created by</span>
