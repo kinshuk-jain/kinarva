@@ -7,7 +7,7 @@ import './fileInfo.css'
 export class FileInfo extends React.Component {
   static propTypes = {
     data: PropTypes.arrayOf(PropTypes.object),
-    showFile: PropTypes.func.isRequired
+    showFile: PropTypes.func.isRequired,
   }
 
   state = {
@@ -15,17 +15,21 @@ export class FileInfo extends React.Component {
   }
 
   componentDidMount() {
-    window.addEventListener('scroll', () => {
-      const y = window.pageYOffset || document.documentElement.scrollTop
-      if (y > 160) {
-        return this.setState({
-          sticky: true
+    window.addEventListener(
+      'scroll',
+      () => {
+        const y = window.pageYOffset || document.documentElement.scrollTop
+        if (y > 160) {
+          return this.setState({
+            sticky: true,
+          })
+        }
+        this.setState({
+          sticky: false,
         })
-      }
-      this.setState({
-        sticky: false
-      })
-    }, supportsPassive ? { passive: true } : false)
+      },
+      supportsPassive ? { passive: true } : false
+    )
   }
 
   getFileSize = (sizeInBytes) => {
@@ -33,10 +37,15 @@ export class FileInfo extends React.Component {
     let size = +sizeInBytes
     size = isNaN(size) ? 0 : size
     let extension = ''
-    switch(true) {
-      case byte >=3 && byte < 6: extension = parseFloat(size/1000).toFixed(2) + ' KB'; break;
-      case byte >=6: extension = parseFloat(size/1000000).toFixed(2) + ' MB'; break;
-      default: extension = size + ' B';
+    switch (true) {
+      case byte >= 3 && byte < 6:
+        extension = parseFloat(size / 1000).toFixed(2) + ' KB'
+        break
+      case byte >= 6:
+        extension = parseFloat(size / 1000000).toFixed(2) + ' MB'
+        break
+      default:
+        extension = size + ' B'
     }
     return extension
   }
@@ -45,7 +54,7 @@ export class FileInfo extends React.Component {
     const docTypeObj = {
       'audit-report': 'Audit Report',
       'finance-report': 'Finance Report',
-      'abc-report': 'ABC Report'
+      'abc-report': 'ABC Report',
     }
     return docTypeObj[type]
   }
@@ -60,26 +69,29 @@ export class FileInfo extends React.Component {
         'Content-Type': 'application/json',
         'X-Requested-With': 'XMLHttpRequest',
         Authorization: `Bearer ${storage.getItem('accessToken')}`,
-      }
+      },
     })
-    .then(r => r.blob())
-    .then(blob => {
-      const newBlob = new Blob([blob], {type: blob.type})
-      if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-        window.navigator.msSaveOrOpenBlob(newBlob);
-        return;
-      }
-      const iframeSrc = window.URL.createObjectURL(newBlob);
-      const viewportWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
-      if (viewportWidth > 720) {
-        this.props.showFile(iframeSrc, name, blob.type)
-      } else {
-        const anchor = document.createElement('a');
-        anchor.href = iframeSrc;
-        anchor.download = name;
-        anchor.click();
-      }
-    })
+      .then((r) => r.blob())
+      .then((blob) => {
+        const newBlob = new Blob([blob], { type: blob.type })
+        if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+          window.navigator.msSaveOrOpenBlob(newBlob)
+          return
+        }
+        const iframeSrc = window.URL.createObjectURL(newBlob)
+        const viewportWidth = Math.max(
+          document.documentElement.clientWidth,
+          window.innerWidth || 0
+        )
+        if (viewportWidth > 720) {
+          this.props.showFile(iframeSrc, name, blob.type)
+        } else {
+          const anchor = document.createElement('a')
+          anchor.href = iframeSrc
+          anchor.download = name
+          anchor.click()
+        }
+      })
   }
 
   renderFile(f = {}, i) {
@@ -88,15 +100,28 @@ export class FileInfo extends React.Component {
         <label className="File-info-label" htmlFor={`info-label-${i}`}>
           <span>i</span>
         </label>
-        <input style={{ display: 'none' }} type="checkbox" id={`info-label-${i}`} />
-        <div style={{ cursor: 'pointer' }} onClick={() => this.fileDownloadHandler(f.docid, f.docName)}>
+        <input
+          style={{ display: 'none' }}
+          type="checkbox"
+          id={`info-label-${i}`}
+        />
+        <div
+          style={{ cursor: 'pointer' }}
+          onClick={() => this.fileDownloadHandler(f.docid, f.docName)}
+        >
           <span className="File-data-label">Name</span>
-          <span title={f.docName} className="File-data-name">{f.docName || 'N/A'}</span>
+          <span title={f.docName} className="File-data-name">
+            {f.docName || 'N/A'}
+          </span>
           <span className="File-data-label">Created by</span>
-          <span title={f.createdBy} className="File-data-createdBy">{f.createdBy || 'Unkown'}</span>
+          <span title={f.createdBy} className="File-data-createdBy">
+            {f.createdBy || 'Unkown'}
+          </span>
           <div className="File-data-type">
             <span className="File-data-label">Type</span>
-            <span title={this.getFileType(f.docType)} className="">{this.getFileType(f.docType) || 'N/A'}</span>
+            <span title={this.getFileType(f.docType)} className="">
+              {this.getFileType(f.docType) || 'N/A'}
+            </span>
           </div>
           <div className="File-data-size">
             <span className="File-data-label">Size</span>
@@ -106,15 +131,21 @@ export class FileInfo extends React.Component {
         <div className="File-metadata">
           <div className="File-metadata-label">
             <span className="">Last accessed by: </span>
-            <span title={f.lastAccessedBy} className="">{f.lastAccessedBy || 'Unkown'}</span>
+            <span title={f.lastAccessedBy} className="">
+              {f.lastAccessedBy || 'Unkown'}
+            </span>
           </div>
           <div className="File-metadata-label">
             <span className="">Last accessed on: </span>
-            <span title={f.lastAccessedOn} className="">{f.lastAccessedOn || 'Unkown'}</span>
+            <span title={f.lastAccessedOn} className="">
+              {f.lastAccessedOn || 'Unkown'}
+            </span>
           </div>
           <div className="File-metadata-label">
             <span className="">Created on: </span>
-            <span title={this.getDate(f.dateCreated)} className="">{this.getDate(f.dateCreated)}</span>
+            <span title={this.getDate(f.dateCreated)} className="">
+              {this.getDate(f.dateCreated)}
+            </span>
           </div>
         </div>
       </div>
@@ -126,16 +157,14 @@ export class FileInfo extends React.Component {
     const { data = [] } = this.props
     return (
       <div className="File-container">
-        <div className={`File-data-title ${sticky? 'sticky' : ''}`}>
+        <div className={`File-data-title ${sticky ? 'sticky' : ''}`}>
           <span className="File-data-name">Name</span>
           <span className="File-data-createdBy">Created By</span>
           <span className="File-data-type">Type</span>
           <span className="File-data-size">Size</span>
         </div>
         <div className="File-data-container">
-          {
-            data.map((f, i) => this.renderFile(f, i))
-          }
+          {data.map((f, i) => this.renderFile(f, i))}
         </div>
       </div>
     )

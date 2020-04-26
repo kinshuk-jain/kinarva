@@ -74,16 +74,20 @@ export class CreateUser extends React.Component {
       this.props.history
     )
       .then(() => {
-        this._isMounted && this.setState({
-          loading: false,
-          message: 'User Successfully Created!!',
-        })
+        this._isMounted &&
+          this.setState({
+            loading: false,
+            message: 'User Successfully Created!!',
+          })
       })
       .catch((e) => {
-        this._isMounted && this.setState({
-          loading: false,
-          message: e.response ? e.response.error : 'Something went wrong! Please try again',
-        })
+        this._isMounted &&
+          this.setState({
+            loading: false,
+            message: e.response
+              ? e.response.error
+              : 'Something went wrong! Please try again',
+          })
       })
   }
 

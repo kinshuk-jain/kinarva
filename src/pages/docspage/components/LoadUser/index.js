@@ -8,7 +8,7 @@ import '../common.css'
 export class LoadUser extends React.Component {
   static propTypes = {
     onClose: PropTypes.func.isRequired,
-    setData: PropTypes.func.isRequired
+    setData: PropTypes.func.isRequired,
   }
 
   state = {
@@ -40,16 +40,17 @@ export class LoadUser extends React.Component {
       }),
     })
       .then((r) => {
-        if (this._isMounted){
+        if (this._isMounted) {
           this.props.setData(r.results)
           this.props.onClose()
         }
       })
       .catch(() => {
-        this._isMounted && this.setState({
-          loading: false,
-          error: 'Could not load user. Please try again',
-        })
+        this._isMounted &&
+          this.setState({
+            loading: false,
+            error: 'Could not load user. Please try again',
+          })
       })
   }
 

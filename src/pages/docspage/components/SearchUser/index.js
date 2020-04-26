@@ -72,18 +72,20 @@ export class SearchUser extends React.Component {
         }),
       })
         .then((resp) => {
-          this._isMounted && this.setState({
-            userList: resp.suggestions,
-            fetchedWithPrefix: prefix,
-            filteredList: resp.suggestions.slice(0, 4),
-            loading: false,
-            expand: true,
-          })
+          this._isMounted &&
+            this.setState({
+              userList: resp.suggestions,
+              fetchedWithPrefix: prefix,
+              filteredList: resp.suggestions.slice(0, 4),
+              loading: false,
+              expand: true,
+            })
         })
         .catch(() => {
-          this._isMounted && this.setState({
-            loading: false,
-          })
+          this._isMounted &&
+            this.setState({
+              loading: false,
+            })
         })
     }
     this.setState({

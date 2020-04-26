@@ -84,26 +84,29 @@ export class UploadDoc extends React.Component {
     })
       .then(() => {
         this.progressBars = []
-        this._isMounted && this.setState({
-          submitted: false,
-          successfulSubmit: true,
-          filesUploaded: [],
-          error: '',
-          uploadResponses: Array(MAX_UPLOADABLE_FILES).fill(undefined),
-        })
-        setTimeout(() => {
-          this._isMounted && this.setState({
-            successfulSubmit: false,
+        this._isMounted &&
+          this.setState({
+            submitted: false,
+            successfulSubmit: true,
+            filesUploaded: [],
+            error: '',
+            uploadResponses: Array(MAX_UPLOADABLE_FILES).fill(undefined),
           })
+        setTimeout(() => {
+          this._isMounted &&
+            this.setState({
+              successfulSubmit: false,
+            })
         }, 5000)
       })
       .catch((e) => {
-        this._isMounted && this.setState({
-          submitted: false,
-          error:
-            e.response.error ||
-            'Error submitting information. Please try again!',
-        })
+        this._isMounted &&
+          this.setState({
+            submitted: false,
+            error:
+              e.response.error ||
+              'Error submitting information. Please try again!',
+          })
       })
   }
 
@@ -133,12 +136,13 @@ export class UploadDoc extends React.Component {
       })
 
       setTimeout(() => {
-        this._isMounted && this.setState({
-          noFileError: false,
-          noYearError: false,
-          noSearchError: false,
-          noSelectError: false,
-        })
+        this._isMounted &&
+          this.setState({
+            noFileError: false,
+            noYearError: false,
+            noSearchError: false,
+            noSelectError: false,
+          })
       }, 5000)
       return
     }
@@ -192,10 +196,11 @@ export class UploadDoc extends React.Component {
           return this.submitData()
         })
         .catch(() => {
-          this._isMounted && this.setState({
-            submitted: false,
-            error: 'Something went wrong. Please try again!',
-          })
+          this._isMounted &&
+            this.setState({
+              submitted: false,
+              error: 'Something went wrong. Please try again!',
+            })
         })
     }
   }
@@ -280,9 +285,10 @@ export class UploadDoc extends React.Component {
         } else {
           uploadResponses.splice(key, 1, 'notok')
         }
-        this._isMounted && this.setState({
-          uploadResponses,
-        })
+        this._isMounted &&
+          this.setState({
+            uploadResponses,
+          })
       })(index)
       xhr.send(formData)
 

@@ -4,7 +4,7 @@ import './modal.css'
 
 export class Modal extends React.Component {
   static propTypes = {
-    fullModal: PropTypes.bool
+    fullModal: PropTypes.bool,
   }
 
   constructor(props) {
@@ -18,12 +18,14 @@ export class Modal extends React.Component {
     const { fullModal = false } = this.props
     return (
       <div onClick={this.props.onClose} className="Modal-parent-container">
-        {!fullModal ? (<div onClick={(e) => e.stopPropagation()} className="Modal-container">
-          <div onClick={this.props.onClose} className="Modal-cross-button">
-            x
+        {!fullModal ? (
+          <div onClick={(e) => e.stopPropagation()} className="Modal-container">
+            <div onClick={this.props.onClose} className="Modal-cross-button">
+              x
+            </div>
+            <div className="Modal-content">{this.props.children}</div>
           </div>
-          <div className="Modal-content">{this.props.children}</div>
-        </div>) : (
+        ) : (
           <div>{this.props.children}</div>
         )}
       </div>

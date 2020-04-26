@@ -25,7 +25,7 @@ class PanelPage extends Component {
       data: [],
       iframeSrc: '',
       fileName: '',
-      fileType: ''
+      fileType: '',
     }
   }
 
@@ -62,7 +62,7 @@ class PanelPage extends Component {
   iframeModalHandler = (iframeSrc = '', name, type) => {
     this.setState({
       iframeSrc,
-      fileName: name, 
+      fileName: name,
       fileType: type,
       showMenu: false,
     })
@@ -100,7 +100,7 @@ class PanelPage extends Component {
 
   setData = (data) => {
     this.setState({
-      data
+      data,
     })
   }
 
@@ -170,16 +170,18 @@ class PanelPage extends Component {
 
   renderFileViewer(type, fileName) {
     const { iframeSrc } = this.state
-    if(type.startsWith('image/')) {
-      return (<img alt={fileName} className="Panel-FileViewer-image" src={iframeSrc} />)
-    } else if(type.startsWith('text/')) {
+    if (type.startsWith('image/')) {
       return (
-        <iframe className="Panel-FileViewer-text" src={iframeSrc} />
+        <img
+          alt={fileName}
+          className="Panel-FileViewer-image"
+          src={iframeSrc}
+        />
       )
+    } else if (type.startsWith('text/')) {
+      return <iframe className="Panel-FileViewer-text" src={iframeSrc} />
     } else {
-      return (
-        <iframe className="Panel-FileViewer-iframe" src={iframeSrc} />
-      )
+      return <iframe className="Panel-FileViewer-iframe" src={iframeSrc} />
     }
   }
 
@@ -195,7 +197,7 @@ class PanelPage extends Component {
       logoutError,
       iframeSrc,
       fileName,
-      fileType
+      fileType,
     } = this.state
     const { history } = this.props
 
@@ -234,7 +236,9 @@ class PanelPage extends Component {
               <div className="Panel-empty-message">
                 Sorry there is nothing here right now
               </div>
-            ) : <FileInfo data={data} showFile={this.iframeModalHandler} />}
+            ) : (
+              <FileInfo data={data} showFile={this.iframeModalHandler} />
+            )}
           </div>
         </div>
         {showCreateUserModal && (
@@ -249,7 +253,10 @@ class PanelPage extends Component {
         )}
         {showLoadUserModal && (
           <Modal onClose={this.closeLoadUserModal}>
-            <LoadUser setData={this.setData} onClose={this.closeLoadUserModal} />
+            <LoadUser
+              setData={this.setData}
+              onClose={this.closeLoadUserModal}
+            />
           </Modal>
         )}
         {showLogoutModal && (
@@ -271,21 +278,19 @@ class PanelPage extends Component {
             )}
           </Modal>
         )}
-        {
-          iframeSrc && (
-            <Modal fullModal onClose={this.closeIframeModal}>
-              <div>
-                <div className="Panel-FileViewer-Header">
-                  <span>{fileName}</span>
-                  <a href={iframeSrc} download={fileName}>Download</a>
-                </div>
-                {
-                  this.renderFileViewer(fileType, fileName)
-                }
+        {iframeSrc && (
+          <Modal fullModal onClose={this.closeIframeModal}>
+            <div>
+              <div className="Panel-FileViewer-Header">
+                <span>{fileName}</span>
+                <a href={iframeSrc} download={fileName}>
+                  Download
+                </a>
               </div>
-            </Modal>
-          )
-        }
+              {this.renderFileViewer(fileType, fileName)}
+            </div>
+          </Modal>
+        )}
       </div>
     )
   }
