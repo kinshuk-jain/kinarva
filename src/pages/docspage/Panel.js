@@ -23,7 +23,9 @@ class PanelPage extends Component {
       showLoadUserModal: false,
       showLogoutModal: false,
       data: [],
-      iframeSrc: ''
+      iframeSrc: '',
+      fileName: '',
+      fileType: ''
     }
   }
 
@@ -57,9 +59,11 @@ class PanelPage extends Component {
     })
   }
 
-  iframeModalHandler = (iframeSrc = '') => {
+  iframeModalHandler = (iframeSrc = '', name, type) => {
     this.setState({
       iframeSrc,
+      fileName: name, 
+      fileType: type,
       showMenu: false,
     })
   }
@@ -164,6 +168,21 @@ class PanelPage extends Component {
     )
   }
 
+  renderFileViewer(type, fileName) {
+    const { iframeSrc } = this.state
+    if(type.startsWith('image/')) {
+      return (<img alt={fileName} className="Panel-FileViewer-image" src={iframeSrc} />)
+    } else if(type.startsWith('text/')) {
+      return (
+        <iframe className="Panel-FileViewer-text" src={iframeSrc} />
+      )
+    } else {
+      return (
+        <iframe className="Panel-FileViewer-iframe" src={iframeSrc} />
+      )
+    }
+  }
+
   render() {
     const {
       loading,
@@ -175,8 +194,9 @@ class PanelPage extends Component {
       showLogoutModal,
       logoutError,
       iframeSrc,
+      fileName,
+      fileType
     } = this.state
-
     const { history } = this.props
 
     return loading ? (
@@ -255,7 +275,13 @@ class PanelPage extends Component {
           iframeSrc && (
             <Modal fullModal onClose={this.closeIframeModal}>
               <div>
-                <iframe className="Panel-File-View-iframe" href={iframeSrc} />
+                <div className="Panel-FileViewer-Header">
+                  <span>{fileName}</span>
+                  <a href={iframeSrc} download={fileName}>Download</a>
+                </div>
+                {
+                  this.renderFileViewer(fileType, fileName)
+                }
               </div>
             </Modal>
           )

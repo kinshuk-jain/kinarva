@@ -70,7 +70,15 @@ export class FileInfo extends React.Component {
         return;
       }
       const iframeSrc = window.URL.createObjectURL(newBlob);
-      this.props.showFile(iframeSrc)
+      const viewportWidth = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+      if (viewportWidth > 720) {
+        this.props.showFile(iframeSrc, name, blob.type)
+      } else {
+        const anchor = document.createElement('a');
+        anchor.href = iframeSrc;
+        anchor.download = name;
+        anchor.click();
+      }
     })
   }
 
