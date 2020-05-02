@@ -20,7 +20,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "deploy": "cp ./config/prod/.env . && npm run build && serverless deploy",
+    "deploy": "./scripts/deploy.sh",
     "prettier": "npx prettier --write '**/*.js'"
   },
   "eslintConfig": {
