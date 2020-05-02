@@ -1,0 +1,16 @@
+{
+  "name": "kinarva",
+  "version": "1.0.0",
+  "description": "lambda code",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "kinshuk.jain",
+  "license": "ISC",
+  "dependencies": {
+    "aws-serverless-express": "^3.3.8",
+    "express": "^4.17.1",
+    "helmet": "^3.22.0"
+  }
+}

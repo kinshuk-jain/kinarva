@@ -14,7 +14,6 @@ RUN npm ci --only=production
 
 # copy code to zip it in next step
 COPY public public
-COPY server.js ./
 COPY config/prod/.env ./
 COPY src src
 
