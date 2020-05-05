@@ -5,12 +5,6 @@ const app = express()
 const helmet = require('helmet')
 const awsServerlessExpress = require('aws-serverless-express')
 
-app.use(helmet())
-
-app.use(express.static(path.join(__dirname, 'build'), {
-  maxAge: '30d'
-}))
-
 const binaryMimeTypes = [
   'application/octet-stream',
   'image/jpeg',
@@ -22,6 +16,16 @@ const binaryMimeTypes = [
   'image/vnd.microsoft.icon',
   'application/pdf'
 ]
+
+app.use(helmet())
+
+app.use(express.static(path.join(__dirname, 'build'), {
+  maxAge: '30d'
+}))
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'))
+})
 
 const server = awsServerlessExpress.createServer(app, null, binaryMimeTypes)
 

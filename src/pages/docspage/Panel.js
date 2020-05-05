@@ -226,9 +226,9 @@ class PanelPage extends Component {
         <div className="Panel-content">
           <div className="Left-pane">
             <List className="Panel-list">
-              <ListItem> Avno </ListItem>
-              <ListItem> Avnos </ListItem>
-              <ListItem> Guddu </ListItem>
+              <ListItem> 1234 </ListItem>
+              <ListItem> 123 </ListItem>
+              <ListItem> 12345 </ListItem>
             </List>
           </div>
           <div className={`Right-pane ${data.length ? 'noBorder' : ''}`}>
