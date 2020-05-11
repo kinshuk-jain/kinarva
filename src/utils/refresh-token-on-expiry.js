@@ -2,6 +2,7 @@ import jwtDecode from 'jwt-decode'
 import { storage } from './storage'
 import { refreshAccessToken } from './fetch'
 
+const LOGIN_ROUTE = '/'
 export async function refreshTokenOnExpiry(callback = () => {}) {
   if (storage.getItem('accessToken')) {
     try {
@@ -13,7 +14,10 @@ export async function refreshTokenOnExpiry(callback = () => {}) {
       }
       callback()
     } catch (e) {
-      window.location.href = '/'
+      storage.setItem('accessToken', '')
+      window.location.href = LOGIN_ROUTE
     }
+  } else if (window.location.pathname !== LOGIN_ROUTE) {
+    window.location.href = LOGIN_ROUTE
   }
 }
