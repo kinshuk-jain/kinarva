@@ -69,6 +69,7 @@ class PanelPage extends Component {
   }
 
   closeUploadUserModal = () => {
+    // TODO: fetch data for currently loaded user again if user is admin
     this.setState({
       showUploadDocModal: false,
     })
@@ -130,13 +131,33 @@ class PanelPage extends Component {
       })
   }
 
+  componentWillUnmount() {
+    this._isMounted = false
+  }
+
   async componentDidMount() {
-    await refreshTokenOnExpiry(() => {
-      // TODO: fetch doc data from backend and put it in state
-      this.setState({
-        loading: false,
-      })
+    this._isMounted = true
+    this.setState({
+      loading: true
     })
+    await fetchApi('/load-user?q=0', {
+      method: 'POST',
+    })
+      .then((r) => {
+        if (this._isMounted) {
+          this.setData(r.results)
+          this.setState({
+            loading: false
+          })
+        }
+      })
+      .catch(() => {
+        this._isMounted &&
+          this.setState({
+            loading: false,
+            error: 'Could not load user. Please try again',
+          })
+      })
   }
 
   renderMenu() {
