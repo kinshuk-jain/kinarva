@@ -5,8 +5,10 @@ import gear from '../../icons/gear.svg'
 import { List, ListItem } from '../../components/list'
 import { Tabs, TabItem } from '../../components/tabs'
 import { Modal } from '../../components/modal'
+import { CreateUser } from './components/CreateUser'
 import { UploadDoc } from './components/UploadDoc'
 import { storage } from '../../utils/storage'
+import { LoadUser } from './components/LoadUser'
 import { FileInfo } from './components/FileInfo'
 import './Panel.css'
 
@@ -15,7 +17,9 @@ class PanelPage extends Component {
     super(props)
     this.state = {
       loading: true,
+      showCreateUserModal: false,
       showUploadDocModal: false,
+      showLoadUserModal: false,
       showLogoutModal: false,
       data: [],
       iframeSrc: '',
@@ -33,9 +37,23 @@ class PanelPage extends Component {
     return true
   }
 
+  createUserHandler = (e) => {
+    this.setState({
+      showCreateUserModal: !this.state.showCreateUserModal,
+      showMenu: false,
+    })
+  }
+
   uploadDocHandler = (e) => {
     this.setState({
       showUploadDocModal: !this.state.showUploadDocModal,
+      showMenu: false,
+    })
+  }
+
+  loadUserModalHandler = () => {
+    this.setState({
+      showLoadUserModal: !this.state.showLoadUserModal,
       showMenu: false,
     })
   }
@@ -50,6 +68,7 @@ class PanelPage extends Component {
   }
 
   closeUploadUserModal = () => {
+    // TODO: fetch data for currently loaded user again
     this.setState({
       showUploadDocModal: false,
     })
@@ -58,6 +77,18 @@ class PanelPage extends Component {
   closeIframeModal = () => {
     this.setState({
       iframeSrc: '',
+    })
+  }
+
+  closeCreateUserModal = () => {
+    this.setState({
+      showCreateUserModal: false,
+    })
+  }
+
+  closeLoadUserModal = () => {
+    this.setState({
+      showLoadUserModal: false,
     })
   }
 
@@ -90,7 +121,6 @@ class PanelPage extends Component {
     })
       .then(() => {
         storage.setItem('accessToken', '')
-        storage.setItem('role', '')
         window.location.href = '/'
       })
       .catch((e) => {
@@ -109,17 +139,15 @@ class PanelPage extends Component {
     this.setState({
       loading: true
     })
-
     await fetchApi('/load-user?q=0', {
       method: 'POST',
     })
       .then((r) => {
         if (this._isMounted) {
-          storage.setItem('role', r.role)
-          if(r.role === 'owner') {
-            this.ownerRole = true
-            this.prefillUser = r.prefillUser
+          if(!r.role || r.role !== 'admin') {
+            window.location.href = '/panel'
           }
+          storage.setItem('role', r.role)
           this.setData(r.results)
           this.setState({
             loading: false
@@ -138,13 +166,25 @@ class PanelPage extends Component {
   renderMenu() {
     return (
       <div className="Panel-menu-dropdown">
-        {this.ownerRole && <div
+        <div
+          onClick={this.createUserHandler}
+          className="Panel-menu-dropdown-item"
+        >
+          Create User
+        </div>
+        <div
           onClick={this.uploadDocHandler}
           className="Panel-menu-dropdown-item"
         >
           Upload
-        </div>}
-        {this.ownerRole && <div style={{ borderTop: '1px solid #efefef', width: '100%' }} /> }
+        </div>
+        <div
+          onClick={this.loadUserModalHandler}
+          className="Panel-menu-dropdown-item"
+        >
+          Load user
+        </div>
+        <div style={{ borderTop: '1px solid #efefef', width: '100%' }} />
         <div onClick={this.logoutHandler} className="Panel-menu-dropdown-item">
           Logout
         </div>
@@ -173,8 +213,10 @@ class PanelPage extends Component {
     const {
       loading,
       data = [],
+      showCreateUserModal,
       showMenu,
       showUploadDocModal,
+      showLoadUserModal,
       showLogoutModal,
       logoutError,
       iframeSrc,
@@ -223,9 +265,22 @@ class PanelPage extends Component {
             )}
           </div>
         </div>
+        {showCreateUserModal && (
+          <Modal onClose={this.closeCreateUserModal}>
+            <CreateUser onClose={this.closeCreateUserModal} history={history} />
+          </Modal>
+        )}
         {showUploadDocModal && (
           <Modal onClose={this.closeUploadUserModal}>
-            <UploadDoc onClose={this.closeUploadUserModal} prefillValue={this.prefillUser} />
+            <UploadDoc onClose={this.closeUploadUserModal} />
+          </Modal>
+        )}
+        {showLoadUserModal && (
+          <Modal onClose={this.closeLoadUserModal}>
+            <LoadUser
+              setData={this.setData}
+              onClose={this.closeLoadUserModal}
+            />
           </Modal>
         )}
         {showLogoutModal && (

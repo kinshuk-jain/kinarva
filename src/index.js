@@ -7,6 +7,10 @@ import './index.css'
 import Loader from './components/loader'
 import App from './pages/homepage/App'
 
+const AdminComponent = lazy(() =>
+  import(/* webpackChunkName: "admin" */ './pages/docspage/PanelAdmin')
+)
+
 const PanelComponent = lazy(() =>
   import(/* webpackChunkName: "panel" */ './pages/docspage/Panel')
 )
@@ -17,10 +21,17 @@ const Panel = (props) => (
   </Suspense>
 )
 
+const Admin = (props) => (
+  <Suspense fallback={<Loader />}>
+    <AdminComponent {...props} />
+  </Suspense>
+)
+
 ReactDOM.render(
   <Router>
     <Route exact path="/" component={App} />
     <Route path="/panel" component={Panel} />
+    <Route path="/admin" component={Admin} />
   </Router>,
   document.getElementById('root')
 )

@@ -14,6 +14,7 @@ const FILE_SIZE_LIMIT = 25
 export class UploadDoc extends React.Component {
   static propTypes = {
     onClose: PropTypes.func.isRequired,
+    prefillValue: PropTypes.object,
   }
 
   constructor(props) {
@@ -391,6 +392,7 @@ export class UploadDoc extends React.Component {
             className={noSearchError ? 'error' : ''}
             disabled={submitted}
             ref={this.search}
+            prefillValue={this.props.prefillValue}
             tabIndex="1"
           />
         </div>

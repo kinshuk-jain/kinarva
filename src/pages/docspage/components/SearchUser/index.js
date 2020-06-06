@@ -12,6 +12,7 @@ export class SearchUser extends React.Component {
     tabIndex: PropTypes.string,
     disabled: PropTypes.bool,
     className: PropTypes.string,
+    prefillValue: PropTypes.object,
   }
 
   state = {
@@ -30,6 +31,12 @@ export class SearchUser extends React.Component {
   componentDidMount() {
     this.recentSearches = JSON.parse(storage.getItem('recentLoadUser')) || []
     this._isMounted = true
+    if (this.props.prefillValue) {
+      this.setState({
+        name: this.props.prefillValue.name,
+        username: this.props.prefillValue.username
+      })
+    }
   }
 
   componentWillUnmount() {
@@ -196,14 +203,14 @@ export class SearchUser extends React.Component {
 
   render() {
     const { name, filteredList, selectedKey, loading, expand } = this.state
-    const { disabled, gainFocus, tabIndex, className } = this.props
+    const { disabled, gainFocus, tabIndex, className, prefillValue } = this.props
     const length = filteredList.length
 
     return (
       <div className="user-input-field" style={{ flexDirection: 'column' }}>
         <input
           tabIndex={tabIndex}
-          disabled={disabled}
+          disabled={disabled || prefillValue}
           autoFocus={gainFocus}
           onBlur={this.onBlurHandler}
           onFocus={this.onFocusHandler}

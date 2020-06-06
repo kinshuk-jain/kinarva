@@ -21,7 +21,12 @@ class App extends Component {
 
   async componentDidMount() {
     await refreshTokenOnExpiry(() => {
-      this.props.history.push('/panel')
+      const role = storage.getItem('role')
+      if (role === 'admin') {
+        this.props.history.push('/admin')
+      } else {
+        this.props.history.push('/panel')
+      }
     })
     this.setState({
       loading: false,
@@ -88,7 +93,12 @@ class App extends Component {
     )
       .then((res) => {
         storage.setItem('accessToken', res.token)
-        this.props.history.push('/panel')
+        storage.setItem('role', res.role)
+        if (res.role === 'admin') {
+          this.props.history.push('/admin')
+        } else {
+          this.props.history.push('/panel')
+        }
       })
       .catch((e) => {
         if (e.status === 401) {
