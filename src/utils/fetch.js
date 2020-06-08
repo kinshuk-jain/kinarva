@@ -45,6 +45,7 @@ async function refreshRequired(response, history) {
 export async function fetchApi(url, options, history) {
   const requestOptions = () => ({
     mode: 'cors',
+    credentials: 'include',
     ...options,
     headers: {
       'Content-Type': 'application/json',

@@ -64,7 +64,7 @@ export class FileInfo extends React.Component {
   }
 
   fileDownloadHandler = (docid, name) => {
-    fetch(`http://localhost:8090/download?q=${docid}`, {
+    fetch(`${process.env.REACT_APP_API_URL}/download?q=${docid}`, {
       headers: {
         'Content-Type': 'application/json',
         'X-Requested-With': 'XMLHttpRequest',
