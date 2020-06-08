@@ -14,12 +14,11 @@
     <script type="text/javascript">
       var olc = function() {
         var el = document.getElementById("login-captcha");
-        var siteKey = document.location.host.search('localhost') !== -1 ? '6LcXYtEUAAAAAGz1zqaAf3PpN0g0l-49UbgIdx3B' : '6LcNMAEVAAAAAOADnJEgvqSRpX-6sOBdtKzw1N7A'
         if(!el) return
         grecaptcha.render(
           el,
           {
-            "sitekey": siteKey,
+            "sitekey": "6LcNMAEVAAAAAOADnJEgvqSRpX-6sOBdtKzw1N7A",
             "tabIndex": "3",
             "expired-callback": "recaptchaEXP"
           }
