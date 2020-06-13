@@ -88,8 +88,7 @@ class App extends Component {
           password,
           captcha,
         }),
-      },
-      this.props.history
+      }
     )
       .then((res) => {
         storage.setItem('accessToken', res.token)

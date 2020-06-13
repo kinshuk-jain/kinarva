@@ -2,6 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { storage } from '../../../../utils/storage'
 import supportsPassive from '../../../../utils/passive-events'
+import { fetchApi } from '../../../../utils/fetch'
+
 import './fileInfo.css'
 
 export class FileInfo extends React.Component {
@@ -64,13 +66,7 @@ export class FileInfo extends React.Component {
   }
 
   fileDownloadHandler = (docid, name) => {
-    fetch(`${process.env.REACT_APP_API_URL}/download?q=${docid}`, {
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Requested-With': 'XMLHttpRequest',
-        Authorization: `Bearer ${storage.getItem('accessToken')}`,
-      },
-    })
+    fetchApi(`${process.env.REACT_APP_API_URL}/download?q=${docid}`, {}, true)
       .then((r) => r.blob())
       .then((blob) => {
         const newBlob = new Blob([blob], { type: blob.type })
@@ -138,7 +134,7 @@ export class FileInfo extends React.Component {
           <div className="File-metadata-label">
             <span className="">Last accessed on: </span>
             <span title={f.lastAccessedOn} className="">
-              {f.lastAccessedOn || 'Unkown'}
+              {this.getDate(f.lastAccessedOn) || 'Unkown'}
             </span>
           </div>
           <div className="File-metadata-label">

@@ -70,8 +70,7 @@ export class CreateUser extends React.Component {
           email,
           canUpload: hasUpload,
         }),
-      },
-      this.props.history
+      }
     )
       .then(() => {
         this._isMounted &&

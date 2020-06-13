@@ -32,7 +32,7 @@ export function refreshAccessToken() {
     })
 }
 
-async function refreshRequired(response, history) {
+async function refreshRequired(response) {
   const header = response.headers.get('WWW-Authenticate') || ''
   if (response.status === 401 && header.startsWith('Bearer')) {
     const { token } = await refreshAccessToken()
@@ -42,7 +42,7 @@ async function refreshRequired(response, history) {
   return response
 }
 
-export async function fetchApi(url, options, history) {
+export async function fetchApi(url, options, giveRaw) {
   const requestOptions = () => ({
     mode: 'cors',
     credentials: 'include',
@@ -58,7 +58,7 @@ export async function fetchApi(url, options, history) {
   const fullUrl = `${DOMAIN}${url}`
 
   return fetch(fullUrl, requestOptions())
-    .then((r) => refreshRequired(r, history))
+    .then((r) => refreshRequired(r))
     .then((r) => {
       if (!r) {
         return fetch(fullUrl, requestOptions())
@@ -66,5 +66,8 @@ export async function fetchApi(url, options, history) {
       return r
     })
     .then(checkStatus)
-    .then((r) => r.json())
+    .then((r) => {
+      if (giveRaw) return r
+      return r.json()
+    })
 }

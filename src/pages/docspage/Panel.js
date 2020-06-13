@@ -251,7 +251,8 @@ class PanelPage extends Component {
           <Modal fullModal onClose={this.closeIframeModal}>
             <div>
               <div className="Panel-FileViewer-Header">
-                <span>{fileName}</span>
+                <span className="Panel-FileViewer-Close">X</span>
+                <span className="Panel-FileViewer-FileName">{fileName}</span>
                 <a href={iframeSrc} download={fileName}>
                   Download
                 </a>

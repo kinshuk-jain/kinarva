@@ -127,7 +127,7 @@ export class UploadDoc extends React.Component {
       this.setState({
         noFileError: !filesUploaded.filter((v) => !!v).length ? true : false,
         noYearError:
-          !this.yearInput.current.value || !this.yearInput.current.value.trim()
+          !this.yearInput.current.value || !this.yearInput.current.value.length === 4
             ? true
             : false,
         noSearchError: !this.search.current.getSelectedData().username
@@ -204,6 +204,10 @@ export class UploadDoc extends React.Component {
             })
         })
     }
+  }
+
+  yearValidation = value => {
+    if (!/^[0-9]{0,4}$/.test(value)) return
   }
 
   fileValidation = async () => {
@@ -414,8 +418,9 @@ export class UploadDoc extends React.Component {
             ref={this.yearInput}
             disabled={submitted}
             style={{ width: '280px' }}
+            onChange={this.yearValidation}
             tabIndex="3"
-            placeholder="year"
+            placeholder="year (YYYY)"
             className={`user-input-field-input ${noYearError ? 'error' : ''}`}
           />
         </div>

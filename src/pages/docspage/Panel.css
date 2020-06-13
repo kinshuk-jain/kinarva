@@ -55,7 +55,21 @@
   color: white;
   text-align: right;
   position: absolute;
-  right: 10%;
+  right: 5%;
+}
+
+.Panel-FileViewer-Close {
+  position: absolute;
+  left: 4%;
+  top: 8px;
+}
+
+.Panel-FileViewer-FileName {
+  width: 50%;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: inline-block;
 }
 
 .Left-pane {
