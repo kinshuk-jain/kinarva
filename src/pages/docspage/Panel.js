@@ -229,7 +229,7 @@ class PanelPage extends Component {
           </Modal>
         )}
         {showLogoutModal && (
-          <Modal>
+          <Modal onClose={this.closeLogoutUserModal}>
             {logoutError ? (
               <div>
                 <div>{logoutError}</div>
