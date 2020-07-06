@@ -127,7 +127,8 @@ export class UploadDoc extends React.Component {
       this.setState({
         noFileError: !filesUploaded.filter((v) => !!v).length ? true : false,
         noYearError:
-          !this.yearInput.current.value || !this.yearInput.current.value.length === 4
+          !this.yearInput.current.value ||
+          !this.yearInput.current.value.length === 4
             ? true
             : false,
         noSearchError: !this.search.current.getSelectedData().username
@@ -206,7 +207,7 @@ export class UploadDoc extends React.Component {
     }
   }
 
-  yearValidation = value => {
+  yearValidation = (value) => {
     if (!/^[0-9]{0,4}$/.test(value)) return
   }
 
@@ -288,7 +289,11 @@ export class UploadDoc extends React.Component {
         if (status >= 200 && status < 300) {
           uploadResponses.splice(key, 1, 'ok')
         } else {
-          uploadResponses.splice(key, 1, JSON.parse(e.target.response || "{}").error || 'notok')
+          uploadResponses.splice(
+            key,
+            1,
+            JSON.parse(e.target.response || '{}').error || 'notok'
+          )
         }
         this._isMounted &&
           this.setState({
@@ -356,7 +361,9 @@ export class UploadDoc extends React.Component {
           />
           {uploadResponses[i] !== 'ok' && (
             <div style={{ color: 'red' }} className="FileList-file-name-label">
-              { uploadResponses[i] === 'notok' ? 'Upload failed. Please retry' : uploadResponses[i] }
+              {uploadResponses[i] === 'notok'
+                ? 'Upload failed. Please retry'
+                : uploadResponses[i]}
             </div>
           )}
         </li>

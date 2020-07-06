@@ -34,7 +34,7 @@ export class SearchUser extends React.Component {
     if (this.props.prefillValue) {
       this.setState({
         name: this.props.prefillValue.name,
-        username: this.props.prefillValue.username
+        username: this.props.prefillValue.username,
       })
     }
   }
@@ -203,7 +203,13 @@ export class SearchUser extends React.Component {
 
   render() {
     const { name, filteredList, selectedKey, loading, expand } = this.state
-    const { disabled, gainFocus, tabIndex, className, prefillValue } = this.props
+    const {
+      disabled,
+      gainFocus,
+      tabIndex,
+      className,
+      prefillValue,
+    } = this.props
     const length = filteredList.length
 
     return (

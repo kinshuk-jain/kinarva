@@ -29,7 +29,7 @@ class PanelPage extends Component {
       fileName: '',
       fileType: '',
       currentValue: 0,
-      maxValue: 0
+      maxValue: 0,
     }
     this.cancelReadingStream = false
   }
@@ -49,15 +49,15 @@ class PanelPage extends Component {
       loadingFile: true,
       fileName: name,
       showMenu: false,
-      maxValue: size
+      maxValue: size,
     })
     fetchApi(`/download?q=${docid}`, {}, true)
       .then(async (r) => {
         const reader = r.body.getReader()
         let chunks = []
         let receivedLength = 0
-        while(true) {
-          const { done, value } = await reader.read()   
+        while (true) {
+          const { done, value } = await reader.read()
           if (done || this.cancelReadingStream) break
           chunks.push(value)
           receivedLength += value.length
@@ -68,7 +68,7 @@ class PanelPage extends Component {
         const blob = new Blob(chunks, { type: r.headers.get('Content-Type') })
         const first4Bytes = new Uint8Array((chunks[0] || []).slice(0, 4))
         const magicNumberInHex = first4Bytes.reduce((acc, val) => {
-          return acc += val.toString(16)
+          return (acc += val.toString(16))
         }, '')
 
         if (!ALLOWED_MAGIC_NUMBERS.includes(magicNumberInHex)) {
@@ -87,7 +87,7 @@ class PanelPage extends Component {
         if (viewportWidth > 720) {
           this.setState({
             iframeSrc,
-            fileType: blob.type
+            fileType: blob.type,
           })
         } else {
           const anchor = document.createElement('a')
@@ -136,7 +136,7 @@ class PanelPage extends Component {
       loadingFile: false,
       iframeSrc: '',
       fileName: '',
-      fileType: ''
+      fileType: '',
     })
   }
 
@@ -197,20 +197,20 @@ class PanelPage extends Component {
   async componentDidMount() {
     this._isMounted = true
     this.setState({
-      loading: true
+      loading: true,
     })
     await fetchApi('/load-user?q=0', {
       method: 'POST',
     })
       .then((r) => {
         if (this._isMounted) {
-          if(!r.role || r.role !== 'admin') {
+          if (!r.role || r.role !== 'admin') {
             window.location.href = '/panel'
           }
           storage.setItem('role', r.role)
           this.setData(r.results)
           this.setState({
-            loading: false
+            loading: false,
           })
         }
       })
@@ -263,9 +263,21 @@ class PanelPage extends Component {
         />
       )
     } else if (type.startsWith('text/')) {
-      return <iframe title="fileviewer" className="Panel-FileViewer-text" src={iframeSrc} />
+      return (
+        <iframe
+          title="fileviewer"
+          className="Panel-FileViewer-text"
+          src={iframeSrc}
+        />
+      )
     } else {
-      return <iframe title="fileviewer" className="Panel-FileViewer-iframe" src={iframeSrc} />
+      return (
+        <iframe
+          title="fileviewer"
+          className="Panel-FileViewer-iframe"
+          src={iframeSrc}
+        />
+      )
     }
   }
 
@@ -284,7 +296,7 @@ class PanelPage extends Component {
       fileName,
       fileType,
       currentValue,
-      maxValue
+      maxValue,
     } = this.state
     const { history } = this.props
 
@@ -324,7 +336,10 @@ class PanelPage extends Component {
                 Sorry there is nothing here right now
               </div>
             ) : (
-              <FileInfo data={data} fileDownloadHandler={this.fileDownloadHandler} />
+              <FileInfo
+                data={data}
+                fileDownloadHandler={this.fileDownloadHandler}
+              />
             )}
           </div>
         </div>
@@ -371,11 +386,21 @@ class PanelPage extends Component {
               <div className="Panel-FileViewer-Header">
                 <span className="Panel-FileViewer-Close">X</span>
                 <span className="Panel-FileViewer-FileName">{fileName}</span>
-                {iframeSrc && <a href={iframeSrc} download={fileName}>
-                  Download
-                </a>}
+                {iframeSrc && (
+                  <a href={iframeSrc} download={fileName}>
+                    Download
+                  </a>
+                )}
               </div>
-              {iframeSrc ? this.renderFileViewer(fileType, fileName) : <progress className="Panel-FileViewer-progress" value={currentValue} max={maxValue} />}
+              {iframeSrc ? (
+                this.renderFileViewer(fileType, fileName)
+              ) : (
+                <progress
+                  className="Panel-FileViewer-progress"
+                  value={currentValue}
+                  max={maxValue}
+                />
+              )}
             </div>
           </Modal>
         )}

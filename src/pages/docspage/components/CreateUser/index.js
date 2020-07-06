@@ -60,18 +60,15 @@ export class CreateUser extends React.Component {
     this.setState({
       loading: true,
     })
-    fetchApi(
-      '/create-user',
-      {
-        method: 'POST',
-        body: JSON.stringify({
-          name,
-          userid: username,
-          email,
-          canUpload: hasUpload,
-        }),
-      }
-    )
+    fetchApi('/create-user', {
+      method: 'POST',
+      body: JSON.stringify({
+        name,
+        userid: username,
+        email,
+        canUpload: hasUpload,
+      }),
+    })
       .then(() => {
         this._isMounted &&
           this.setState({

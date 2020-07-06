@@ -23,5 +23,5 @@ export const ALLOWED_MAGIC_NUMBERS = [
   'd0cf11e0', // xls/doc/ppt
   '504b0304', // xlsx/docx/pptx
   '25504446', // pdf
-  '7b226572' // pdf
+  '7b226572', // pdf
 ]

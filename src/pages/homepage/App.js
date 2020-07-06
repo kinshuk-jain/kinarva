@@ -79,17 +79,14 @@ class App extends Component {
       return
     }
 
-    fetchApi(
-      '/login',
-      {
-        method: 'POST',
-        body: JSON.stringify({
-          username,
-          password,
-          captcha,
-        }),
-      }
-    )
+    fetchApi('/login', {
+      method: 'POST',
+      body: JSON.stringify({
+        username,
+        password,
+        captcha,
+      }),
+    })
       .then((res) => {
         storage.setItem('accessToken', res.token)
         storage.setItem('role', res.role)
