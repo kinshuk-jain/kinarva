@@ -56,7 +56,6 @@ export async function fetchApi(url, options, giveRaw) {
   })
 
   const fullUrl = `${DOMAIN}${url}`
-
   return fetch(fullUrl, requestOptions())
     .then((r) => refreshRequired(r))
     .then((r) => {

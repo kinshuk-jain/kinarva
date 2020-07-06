@@ -10,6 +10,8 @@ import { UploadDoc } from './components/UploadDoc'
 import { storage } from '../../utils/storage'
 import { LoadUser } from './components/LoadUser'
 import { FileInfo } from './components/FileInfo'
+import { ALLOWED_MAGIC_NUMBERS } from '../../constants'
+
 import './Panel.css'
 
 class PanelPage extends Component {
@@ -17,6 +19,7 @@ class PanelPage extends Component {
     super(props)
     this.state = {
       loading: true,
+      loadingFile: false,
       showCreateUserModal: false,
       showUploadDocModal: false,
       showLoadUserModal: false,
@@ -25,7 +28,10 @@ class PanelPage extends Component {
       iframeSrc: '',
       fileName: '',
       fileType: '',
+      currentValue: 0,
+      maxValue: 0
     }
+    this.cancelReadingStream = false
   }
 
   isEmpty = (obj) => {
@@ -35,6 +41,65 @@ class PanelPage extends Component {
       }
     }
     return true
+  }
+
+  fileDownloadHandler = (docid, name, size) => {
+    this.cancelReadingStream = false
+    this.setState({
+      loadingFile: true,
+      fileName: name,
+      showMenu: false,
+      maxValue: size
+    })
+    fetchApi(`/download?q=${docid}`, {}, true)
+      .then(async (r) => {
+        const reader = r.body.getReader()
+        let chunks = []
+        let receivedLength = 0
+        while(true) {
+          const { done, value } = await reader.read()   
+          if (done || this.cancelReadingStream) break
+          chunks.push(value)
+          receivedLength += value.length
+          this.setState({
+            currentValue: receivedLength,
+          })
+        }
+        const blob = new Blob(chunks, { type: r.headers.get('Content-Type') })
+        const first4Bytes = new Uint8Array((chunks[0] || []).slice(0, 4))
+        const magicNumberInHex = first4Bytes.reduce((acc, val) => {
+          return acc += val.toString(16)
+        }, '')
+
+        if (!ALLOWED_MAGIC_NUMBERS.includes(magicNumberInHex)) {
+          // the file may contain virus
+          console.log('file may have virus')
+        }
+        if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+          window.navigator.msSaveOrOpenBlob(blob)
+          return
+        }
+        const iframeSrc = window.URL.createObjectURL(blob)
+        const viewportWidth = Math.max(
+          document.documentElement.clientWidth,
+          window.innerWidth || 0
+        )
+        if (viewportWidth > 720) {
+          this.setState({
+            iframeSrc,
+            fileType: blob.type
+          })
+        } else {
+          const anchor = document.createElement('a')
+          anchor.href = iframeSrc
+          anchor.download = name
+          anchor.click()
+          this.closeIframeModal()
+        }
+      })
+      .catch(() => {
+        // show error
+      })
   }
 
   createUserHandler = (e) => {
@@ -58,15 +123,6 @@ class PanelPage extends Component {
     })
   }
 
-  iframeModalHandler = (iframeSrc = '', name, type) => {
-    this.setState({
-      iframeSrc,
-      fileName: name,
-      fileType: type,
-      showMenu: false,
-    })
-  }
-
   closeUploadUserModal = () => {
     // TODO: fetch data for currently loaded user again
     this.setState({
@@ -75,8 +131,12 @@ class PanelPage extends Component {
   }
 
   closeIframeModal = () => {
+    this.cancelReadingStream = true
     this.setState({
+      loadingFile: false,
       iframeSrc: '',
+      fileName: '',
+      fileType: ''
     })
   }
 
@@ -203,9 +263,9 @@ class PanelPage extends Component {
         />
       )
     } else if (type.startsWith('text/')) {
-      return <iframe className="Panel-FileViewer-text" src={iframeSrc} />
+      return <iframe title="fileviewer" className="Panel-FileViewer-text" src={iframeSrc} />
     } else {
-      return <iframe className="Panel-FileViewer-iframe" src={iframeSrc} />
+      return <iframe title="fileviewer" className="Panel-FileViewer-iframe" src={iframeSrc} />
     }
   }
 
@@ -220,8 +280,11 @@ class PanelPage extends Component {
       showLogoutModal,
       logoutError,
       iframeSrc,
+      loadingFile,
       fileName,
       fileType,
+      currentValue,
+      maxValue
     } = this.state
     const { history } = this.props
 
@@ -261,7 +324,7 @@ class PanelPage extends Component {
                 Sorry there is nothing here right now
               </div>
             ) : (
-              <FileInfo data={data} showFile={this.iframeModalHandler} />
+              <FileInfo data={data} fileDownloadHandler={this.fileDownloadHandler} />
             )}
           </div>
         </div>
@@ -302,17 +365,17 @@ class PanelPage extends Component {
             )}
           </Modal>
         )}
-        {iframeSrc && (
+        {loadingFile && (
           <Modal fullModal onClose={this.closeIframeModal}>
             <div>
               <div className="Panel-FileViewer-Header">
                 <span className="Panel-FileViewer-Close">X</span>
                 <span className="Panel-FileViewer-FileName">{fileName}</span>
-                <a href={iframeSrc} download={fileName}>
+                {iframeSrc && <a href={iframeSrc} download={fileName}>
                   Download
-                </a>
+                </a>}
               </div>
-              {this.renderFileViewer(fileType, fileName)}
+              {iframeSrc ? this.renderFileViewer(fileType, fileName) : <progress className="Panel-FileViewer-progress" value={currentValue} max={maxValue} />}
             </div>
           </Modal>
         )}

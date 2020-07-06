@@ -1,15 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { storage } from '../../../../utils/storage'
 import supportsPassive from '../../../../utils/passive-events'
-import { fetchApi } from '../../../../utils/fetch'
 
 import './fileInfo.css'
 
 export class FileInfo extends React.Component {
   static propTypes = {
     data: PropTypes.arrayOf(PropTypes.object),
-    showFile: PropTypes.func.isRequired,
+    fileDownloadHandler: PropTypes.func.isRequired,
   }
 
   state = {
@@ -65,32 +63,8 @@ export class FileInfo extends React.Component {
     return new Date(+dateStr).toUTCString()
   }
 
-  fileDownloadHandler = (docid, name) => {
-    fetchApi(`${process.env.REACT_APP_API_URL}/download?q=${docid}`, {}, true)
-      .then((r) => r.blob())
-      .then((blob) => {
-        const newBlob = new Blob([blob], { type: blob.type })
-        if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-          window.navigator.msSaveOrOpenBlob(newBlob)
-          return
-        }
-        const iframeSrc = window.URL.createObjectURL(newBlob)
-        const viewportWidth = Math.max(
-          document.documentElement.clientWidth,
-          window.innerWidth || 0
-        )
-        if (viewportWidth > 720) {
-          this.props.showFile(iframeSrc, name, blob.type)
-        } else {
-          const anchor = document.createElement('a')
-          anchor.href = iframeSrc
-          anchor.download = name
-          anchor.click()
-        }
-      })
-  }
-
   renderFile(f = {}, i) {
+    const { fileDownloadHandler } = this.props
     return (
       <div className="File-data" key={i}>
         <label className="File-info-label" htmlFor={`info-label-${i}`}>
@@ -103,7 +77,7 @@ export class FileInfo extends React.Component {
         />
         <div
           style={{ cursor: 'pointer' }}
-          onClick={() => this.fileDownloadHandler(f.docid, f.docName)}
+          onClick={() => fileDownloadHandler(f.docid, f.docName, +f.size)}
         >
           <span className="File-data-label">Name</span>
           <span title={f.docName} className="File-data-name">

@@ -36,6 +36,20 @@
   top: 7%;
   left: 50%;
   transform: translateX(-50%);
+  max-width: 100%;
+}
+
+.Panel-FileViewer-progress {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+progress,
+progress::-moz-progress-bar,
+progress::-webkit-progress-value { 
+  color: rgb(1, 1, 54);
 }
 
 .Panel-FileViewer-Header {
@@ -62,6 +76,7 @@
   position: absolute;
   left: 4%;
   top: 8px;
+  cursor: pointer;
 }
 
 .Panel-FileViewer-FileName {

@@ -149,7 +149,7 @@ export class UploadDoc extends React.Component {
     }
 
     // check if any file could not be uploaded
-    if (uploadResponses.some((v) => v === 'notok')) {
+    if (uploadResponses.some((v) => v !== 'ok')) {
       this.setState({
         error:
           'There was a problem with one or more of your files. Please remove that file or re-upload it before submitting',
@@ -288,7 +288,7 @@ export class UploadDoc extends React.Component {
         if (status >= 200 && status < 300) {
           uploadResponses.splice(key, 1, 'ok')
         } else {
-          uploadResponses.splice(key, 1, 'notok')
+          uploadResponses.splice(key, 1, JSON.parse(e.target.response || "{}").error || 'notok')
         }
         this._isMounted &&
           this.setState({
@@ -354,9 +354,9 @@ export class UploadDoc extends React.Component {
             value="0"
             max="100"
           />
-          {uploadResponses[i] === 'notok' && (
+          {uploadResponses[i] !== 'ok' && (
             <div style={{ color: 'red' }} className="FileList-file-name-label">
-              Upload failed. Please retry
+              { uploadResponses[i] === 'notok' ? 'Upload failed. Please retry' : uploadResponses[i] }
             </div>
           )}
         </li>
