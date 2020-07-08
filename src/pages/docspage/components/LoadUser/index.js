@@ -33,7 +33,7 @@ export class LoadUser extends React.Component {
       username = this.search.getSelectedData().username
     }
 
-    fetchApi('/load-user', {
+    fetchApi('/load-user?q=0', {
       method: 'POST',
       body: JSON.stringify({
         username,

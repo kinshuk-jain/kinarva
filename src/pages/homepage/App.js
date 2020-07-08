@@ -97,6 +97,8 @@ class App extends Component {
         }
       })
       .catch((e) => {
+        // reset captcha
+        window.grecaptcha.reset()
         if (e.status === 401) {
           this.setState({
             error: e.response.error || e.response.message,
