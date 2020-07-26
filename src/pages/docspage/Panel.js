@@ -8,7 +8,7 @@ import { Modal } from '../../components/modal'
 import { UploadDoc } from './components/UploadDoc'
 import { storage } from '../../utils/storage'
 import { FileInfo } from './components/FileInfo'
-import { ALLOWED_MAGIC_NUMBERS } from '../../constants'
+import { openOrSaveFile, readStream } from './utils'
 import './Panel.css'
 
 class PanelPage extends Component {
@@ -25,8 +25,8 @@ class PanelPage extends Component {
       fileType: '',
       currentValue: 0,
       maxValue: 0,
+      fileViewerMessage: undefined
     }
-    this.cancelReadingStream = false
   }
 
   isEmpty = (obj) => {
@@ -39,7 +39,6 @@ class PanelPage extends Component {
   }
 
   fileDownloadHandler = (docid, name, size) => {
-    this.cancelReadingStream = false
     this.setState({
       loadingFile: true,
       fileName: name,
@@ -48,62 +47,40 @@ class PanelPage extends Component {
     })
     fetchApi(`/download?q=${docid}`, {}, true)
       .then(async (r) => {
-        const reader = r.body.getReader()
-        let chunks = []
-        let receivedLength = 0
-        while (true) {
-          const { done, value } = await reader.read()
-          if (done || this.cancelReadingStream) break
-          chunks.push(value)
-          receivedLength += value.length
-          this.setState({
-            currentValue: receivedLength,
-          })
-        }
-        const blob = new Blob(chunks, { type: r.headers.get('Content-Type') })
-        const first4Bytes = new Uint8Array((chunks[0] || []).slice(0, 4))
-        const magicNumberInHex = first4Bytes.reduce((acc, val) => {
-          return (acc += val.toString(16))
-        }, '')
-
-        if (!ALLOWED_MAGIC_NUMBERS.includes(magicNumberInHex)) {
-          // the file may contain virus
-          console.log('file may have virus')
-        }
-        if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-          window.navigator.msSaveOrOpenBlob(blob)
-          return
-        }
-        const iframeSrc = window.URL.createObjectURL(blob)
-        const viewportWidth = Math.max(
-          document.documentElement.clientWidth,
-          window.innerWidth || 0
-        )
-        if (viewportWidth > 720) {
-          this.setState({
-            iframeSrc,
-            fileType: blob.type,
-          })
-        } else {
-          const anchor = document.createElement('a')
-          anchor.href = iframeSrc
-          anchor.download = name
-          anchor.click()
+        const fileType = r.headers.get('Content-Type')
+        this.streamReader = r.body.getReader()
+        const chunks = await readStream(this.streamReader, length => this.setState({ currentValue: length }))
+        const { fileHref, hasVirus} = this.state.loadingFile ? openOrSaveFile(chunks, name, fileType) : {}
+        if (!fileHref && !hasVirus) {
           this.closeIframeModal()
+        } else {
+          this.setState({
+            iframeSrc: fileHref,
+            fileType,
+            fileViewerMessage: hasVirus ? 'This file may contain a virus. It has been downloaded but not opened. Please open it only if you trust the source of the file, otherwise delete it.' : undefined
+          })
         }
       })
       .catch(() => {
         // show error
+        this.setState({
+          iframeSrc: undefined,
+          fileViewerMessage: 'File could not be downloaded, please try again.'
+        })
       })
   }
 
   closeIframeModal = () => {
-    this.cancelReadingStream = true
+    this.streamReader && this.streamReader.cancel()
+    this.streamReader = undefined
     this.setState({
       loadingFile: false,
       iframeSrc: '',
       fileName: '',
       fileType: '',
+      currentValue: 0,
+      maxValue: 0,
+      fileViewerMessage: undefined,
     })
   }
 
@@ -215,8 +192,18 @@ class PanelPage extends Component {
     )
   }
 
-  renderFileViewer(type, fileName) {
+  renderFileViewer(type, fileName, fileViewerMessage) {
     const { iframeSrc } = this.state
+    if (fileViewerMessage) {
+      return (
+        <div
+          title="fileviewer"
+          className="Panel-FileViewer-error"
+        >
+          {fileViewerMessage}
+        </div>
+      )
+    }
     if (type.startsWith('image/')) {
       return (
         <img
@@ -258,6 +245,7 @@ class PanelPage extends Component {
       fileType,
       currentValue,
       maxValue,
+      fileViewerMessage,
     } = this.state
 
     return loading ? (
@@ -342,8 +330,8 @@ class PanelPage extends Component {
                   </a>
                 )}
               </div>
-              {iframeSrc ? (
-                this.renderFileViewer(fileType, fileName)
+              {(iframeSrc || fileViewerMessage) ? (
+                this.renderFileViewer(fileType, fileName, fileViewerMessage)
               ) : (
                 <progress
                   className="Panel-FileViewer-progress"

@@ -150,7 +150,7 @@ export class UploadDoc extends React.Component {
     }
 
     // check if any file could not be uploaded
-    if (uploadResponses.some((v) => v !== 'ok')) {
+    if (uploadResponses.some((v) => typeof v === 'string' && v !== 'ok')) {
       this.setState({
         error:
           'There was a problem with one or more of your files. Please remove that file or re-upload it before submitting',
@@ -322,7 +322,7 @@ export class UploadDoc extends React.Component {
     const { filesUploaded, uploadResponses } = this.state
     filesUploaded[i].xhr.abort()
     filesUploaded[i] = null
-    uploadResponses[i] = ''
+    uploadResponses[i] = undefined
     this.setState({
       filesUploaded,
       uploadResponses,

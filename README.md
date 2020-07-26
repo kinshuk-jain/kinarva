@@ -32,10 +32,5 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 
 ### TODOS
 
-- Add file viewer on mobile devices. Currently files can only be downloaded on mobile devices
-
-
-### Bugs
-
-- When downloading, show loading screen as file loads in background. Can be combined with virus protection feature
-- Upload failure messages from backend not showing
+- Allow file deletion
+- Add support for filters
