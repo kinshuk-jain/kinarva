@@ -25,7 +25,7 @@ class PanelPage extends Component {
       fileType: '',
       currentValue: 0,
       maxValue: 0,
-      fileViewerMessage: undefined
+      fileViewerMessage: undefined,
     }
   }
 
@@ -49,15 +49,21 @@ class PanelPage extends Component {
       .then(async (r) => {
         const fileType = r.headers.get('Content-Type')
         this.streamReader = r.body.getReader()
-        const chunks = await readStream(this.streamReader, length => this.setState({ currentValue: length }))
-        const { fileHref, hasVirus} = this.state.loadingFile ? openOrSaveFile(chunks, name, fileType) : {}
+        const chunks = await readStream(this.streamReader, (length) =>
+          this.setState({ currentValue: length })
+        )
+        const { fileHref, hasVirus } = this.state.loadingFile
+          ? openOrSaveFile(chunks, name, fileType)
+          : {}
         if (!fileHref && !hasVirus) {
           this.closeIframeModal()
         } else {
           this.setState({
             iframeSrc: fileHref,
             fileType,
-            fileViewerMessage: hasVirus ? 'This file may contain a virus. It has been downloaded but not opened. Please open it only if you trust the source of the file, otherwise delete it.' : undefined
+            fileViewerMessage: hasVirus
+              ? 'This file may contain a virus. It has been downloaded but not opened. Please open it only if you trust the source of the file, otherwise delete it.'
+              : undefined,
           })
         }
       })
@@ -65,7 +71,7 @@ class PanelPage extends Component {
         // show error
         this.setState({
           iframeSrc: undefined,
-          fileViewerMessage: 'File could not be downloaded, please try again.'
+          fileViewerMessage: 'File could not be downloaded, please try again.',
         })
       })
   }
@@ -196,10 +202,7 @@ class PanelPage extends Component {
     const { iframeSrc } = this.state
     if (fileViewerMessage) {
       return (
-        <div
-          title="fileviewer"
-          className="Panel-FileViewer-error"
-        >
+        <div title="fileviewer" className="Panel-FileViewer-error">
           {fileViewerMessage}
         </div>
       )
@@ -330,7 +333,7 @@ class PanelPage extends Component {
                   </a>
                 )}
               </div>
-              {(iframeSrc || fileViewerMessage) ? (
+              {iframeSrc || fileViewerMessage ? (
                 this.renderFileViewer(fileType, fileName, fileViewerMessage)
               ) : (
                 <progress

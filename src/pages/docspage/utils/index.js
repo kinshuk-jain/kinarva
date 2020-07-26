@@ -1,7 +1,5 @@
 import { ALLOWED_MAGIC_NUMBERS } from '../../../constants'
 
-
-
 export const openOrSaveFile = (chunks, chunkName, type) => {
   const blob = new Blob(chunks, { type })
   const first4Bytes = new Uint8Array((chunks[0] || []).slice(0, 4))
@@ -24,7 +22,7 @@ export const openOrSaveFile = (chunks, chunkName, type) => {
     // the file may contain virus so download file
     saveFile()
     return {
-      hasVirus: true
+      hasVirus: true,
     }
   }
 
@@ -41,7 +39,7 @@ export const openOrSaveFile = (chunks, chunkName, type) => {
   if (viewportWidth > 720) {
     return {
       fileHref,
-      hasVirus: false
+      hasVirus: false,
     }
   } else {
     saveFile()
