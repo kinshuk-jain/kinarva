@@ -6,6 +6,7 @@ import { fetchApi } from '../../../../utils/fetch'
 import { refreshTokenOnExpiry } from '../../../../utils/refresh-token-on-expiry'
 import { Spinner } from '../../../../components/spinner'
 import { DISALLOWED_MIME_TYPES } from '../../../../constants'
+import filterData from '../../data/filters.json'
 import '../common.css'
 
 const MAX_UPLOADABLE_FILES = 5
@@ -33,10 +34,14 @@ export class UploadDoc extends React.Component {
       noYearError: false,
       noFileError: false,
       noSearchError: false,
+      noFilterError: false,
+      activeFilter: -1,
+      yearValue: '',
     }
     this.progressBars = []
     this.yearInput = React.createRef()
     this.fileTypeInput = React.createRef()
+    this.fileFilterInput = React.createRef()
     this.search = React.createRef()
   }
 
@@ -52,6 +57,9 @@ export class UploadDoc extends React.Component {
       noYearError: false,
       noFileError: false,
       noSearchError: false,
+      noFilterError: false,
+      activeFilter: -1,
+      yearValue: '',
     }
   }
 
@@ -69,16 +77,24 @@ export class UploadDoc extends React.Component {
     this._isMounted = false
   }
 
+  setActiveFilter = (i) => {
+    this.setState({
+      activeFilter: i,
+    })
+  }
+
   submitData = () => {
     const { username } = this.search.current.getSelectedData()
     const year = this.yearInput.current.value
     const docType = this.fileTypeInput.current.value
+    const subType = this.fileFilterInput.current.value
     return fetchApi('/upload-file/submit', {
       method: 'POST',
       body: JSON.stringify({
         username,
         year,
         docType,
+        subType,
         numOfFilesUploaded: this.state.uploadResponses.filter((v) => v === 'ok')
           .length,
       }),
@@ -92,6 +108,8 @@ export class UploadDoc extends React.Component {
             filesUploaded: [],
             error: '',
             uploadResponses: Array(MAX_UPLOADABLE_FILES).fill(undefined),
+            activeFilter: -1,
+            yearValue: '',
           })
         setTimeout(() => {
           this._isMounted &&
@@ -104,6 +122,7 @@ export class UploadDoc extends React.Component {
         this._isMounted &&
           this.setState({
             submitted: false,
+            activeFilter: -1,
             error:
               e.response.error ||
               'Error submitting information. Please try again!',
@@ -122,7 +141,8 @@ export class UploadDoc extends React.Component {
       !this.search.current.getSelectedData().username ||
       !this.yearInput.current.value ||
       !this.yearInput.current.value.trim() ||
-      !this.fileTypeInput.current.value
+      !this.fileTypeInput.current.value ||
+      !this.fileFilterInput.current.value
     ) {
       this.setState({
         noFileError: !filesUploaded.filter((v) => !!v).length ? true : false,
@@ -135,6 +155,7 @@ export class UploadDoc extends React.Component {
           ? true
           : false,
         noSelectError: !this.fileTypeInput.current.value ? true : false,
+        noFilterError: !this.fileFilterInput.current.value ? true : false,
       })
 
       setTimeout(() => {
@@ -144,6 +165,7 @@ export class UploadDoc extends React.Component {
             noYearError: false,
             noSearchError: false,
             noSelectError: false,
+            noFilterError: false,
           })
       }, 5000)
       return
@@ -207,8 +229,11 @@ export class UploadDoc extends React.Component {
     }
   }
 
-  yearValidation = (value) => {
-    if (!/^[0-9]{0,4}$/.test(value)) return
+  yearValidation = (e) => {
+    if (!/^[0-9-]+$/.test(e.target.value)) return
+    this.setState({
+      yearValue: e.target.value,
+    })
   }
 
   fileValidation = async () => {
@@ -380,7 +405,10 @@ export class UploadDoc extends React.Component {
       noFileError,
       noSearchError,
       noSelectError,
+      noFilterError,
       noYearError,
+      activeFilter,
+      yearValue,
     } = this.state
     return (
       <div>
@@ -413,11 +441,32 @@ export class UploadDoc extends React.Component {
             ref={this.fileTypeInput}
             tabIndex="2"
             className={`user-input-select ${noSelectError ? 'error' : ''}`}
+            onChange={(e) => {
+              this.setActiveFilter(e.target.selectedIndex - 1)
+            }}
           >
-            <option value="">Select report type</option>
-            <option value="audit-report">Audit report</option>
-            <option value="finance-report">Finance report</option>
-            <option value="gullu-report">Gullu report</option>
+            <option value="">Select filter type 1</option>
+            {filterData.filters.map((filter, i) => (
+              <option value={filter.value} key={i}>
+                {filter.label}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="user-input-field">
+          <select
+            disabled={submitted}
+            ref={this.fileFilterInput}
+            tabIndex="3"
+            className={`user-input-select ${noFilterError ? 'error' : ''}`}
+          >
+            <option value="">Select Filter type 2</option>
+            {filterData.filters[activeFilter] &&
+              filterData.filters[activeFilter].subfilters.map((filter, i) => (
+                <option value={filter.value} key={i}>
+                  {filter.label}
+                </option>
+              ))}
           </select>
         </div>
         <div className="user-input-field">
@@ -426,8 +475,9 @@ export class UploadDoc extends React.Component {
             disabled={submitted}
             style={{ width: '280px' }}
             onChange={this.yearValidation}
-            tabIndex="3"
-            placeholder="year (YYYY)"
+            value={yearValue}
+            tabIndex="4"
+            placeholder="year (YYYY-YYYY)"
             className={`user-input-field-input ${noYearError ? 'error' : ''}`}
           />
         </div>
@@ -440,7 +490,7 @@ export class UploadDoc extends React.Component {
             <i>{`(Max ${MAX_UPLOADABLE_FILES}, less than ${FILE_SIZE_LIMIT}MB)`}</i>
           </label>
           <input
-            tabIndex="4"
+            tabIndex="5"
             id="file-upload"
             ref={(el) => (this.fileInput = el)}
             style={{ width: '280px', display: 'none' }}
@@ -458,7 +508,7 @@ export class UploadDoc extends React.Component {
         <div className="user-input-field">
           <button
             onClick={this.submitHandler}
-            tabIndex="5"
+            tabIndex="6"
             className="user-input-field-button"
           >
             {submitted ? <Spinner /> : 'Submit'}

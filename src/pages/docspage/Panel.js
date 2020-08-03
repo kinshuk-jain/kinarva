@@ -8,6 +8,7 @@ import { Modal } from '../../components/modal'
 import { UploadDoc } from './components/UploadDoc'
 import { storage } from '../../utils/storage'
 import { FileInfo } from './components/FileInfo'
+import filtersData from './data/filters.json'
 import { openOrSaveFile, readStream } from './utils'
 import './Panel.css'
 
@@ -26,6 +27,7 @@ class PanelPage extends Component {
       currentValue: 0,
       maxValue: 0,
       fileViewerMessage: undefined,
+      activeTab: 0,
     }
   }
 
@@ -234,6 +236,12 @@ class PanelPage extends Component {
     }
   }
 
+  setActiveTab = (i) => {
+    this.setState({
+      activeTab: i,
+    })
+  }
+
   render() {
     const {
       loading,
@@ -249,6 +257,7 @@ class PanelPage extends Component {
       currentValue,
       maxValue,
       fileViewerMessage,
+      activeTab,
     } = this.state
 
     return loading ? (
@@ -268,17 +277,25 @@ class PanelPage extends Component {
           {showMenu && this.renderMenu()}
         </div>
         <Tabs>
-          <TabItem label="Audit Report" />
-          <TabItem label="Financial Report" />
-          <TabItem label="Income Tax Return" />
-          <TabItem label="ddd" />
+          {filtersData.filters.map((filter, ind) => {
+            return (
+              <TabItem
+                onClick={() => this.setActiveTab(ind)}
+                key={ind}
+                label={filter.label}
+              />
+            )
+          })}
         </Tabs>
         <div className="Panel-content">
           <div className="Left-pane">
             <List className="Panel-list">
-              <ListItem> 1234 </ListItem>
-              <ListItem> 123 </ListItem>
-              <ListItem> 12345 </ListItem>
+              {filtersData.filters[activeTab] &&
+                filtersData.filters[
+                  activeTab
+                ].subfilters.map((subfilter, i) => (
+                  <ListItem key={i}>{subfilter.label}</ListItem>
+                ))}
             </List>
           </div>
           <div className={`Right-pane ${data.length ? 'noBorder' : ''}`}>

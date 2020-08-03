@@ -11,6 +11,7 @@ import { storage } from '../../utils/storage'
 import { LoadUser } from './components/LoadUser'
 import { FileInfo } from './components/FileInfo'
 import { openOrSaveFile, readStream } from './utils'
+import filtersData from './data/filters.json'
 
 import './Panel.css'
 
@@ -31,6 +32,7 @@ class PanelPage extends Component {
       currentValue: 0,
       maxValue: 0,
       fileViewerMessage: undefined,
+      activeTab: 0,
     }
   }
 
@@ -235,6 +237,12 @@ class PanelPage extends Component {
     )
   }
 
+  setActiveTab = (i) => {
+    this.setState({
+      activeTab: i,
+    })
+  }
+
   renderFileViewer(type, fileName, fileViewerMessage) {
     const { iframeSrc } = this.state
     if (fileViewerMessage) {
@@ -288,6 +296,7 @@ class PanelPage extends Component {
       currentValue,
       fileViewerMessage,
       maxValue,
+      activeTab,
     } = this.state
     const { history } = this.props
 
@@ -308,17 +317,23 @@ class PanelPage extends Component {
           {showMenu && this.renderMenu()}
         </div>
         <Tabs>
-          <TabItem label="Audit Report" />
-          <TabItem label="Financial Report" />
-          <TabItem label="Income Tax Return" />
-          <TabItem label="ddd" />
+          {filtersData.filters.map((filter, ind) => (
+            <TabItem
+              onClick={() => this.setActiveTab(ind)}
+              key={ind}
+              label={filter.label}
+            />
+          ))}
         </Tabs>
         <div className="Panel-content">
           <div className="Left-pane">
             <List className="Panel-list">
-              <ListItem> 1234 </ListItem>
-              <ListItem> 123 </ListItem>
-              <ListItem> 12345 </ListItem>
+              {filtersData.filters[activeTab] &&
+                filtersData.filters[
+                  activeTab
+                ].subfilters.map((subfilter, i) => (
+                  <ListItem key={i}>{subfilter.label}</ListItem>
+                ))}
             </List>
           </div>
           <div className={`Right-pane ${data.length ? 'noBorder' : ''}`}>
