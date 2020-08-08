@@ -29,8 +29,9 @@ export class FileInfo extends React.Component {
       Date.now() - this.state.mouseDownTime > 3000 &&
       this.state.mouseDownFile >= 0
     ) {
-      console.log(this.props.data[this.state.mouseDownFile])
-      // TODO: prompt user to delete mouseDownFile, on yes delete it
+      const f = this.props.data[this.state.mouseDownFile]
+      typeof this.props.onLongPress === 'function' &&
+        this.props.onLongPress(f.docName, f.docId)
     }
     this.setState({
       mouseDownTime: 0,

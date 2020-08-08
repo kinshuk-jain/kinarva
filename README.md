@@ -32,5 +32,5 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 
 ### TODOS
 
-- Allow file deletion
+- style delete Modal, call delete API
 - filter by year

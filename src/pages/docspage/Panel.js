@@ -20,6 +20,8 @@ class PanelPage extends Component {
       loadingFile: false,
       showUploadDocModal: false,
       showLogoutModal: false,
+      showFileDeleteModal: false,
+      fileSetForDelete: {},
       data: [],
       iframeSrc: '',
       fileName: '',
@@ -103,6 +105,22 @@ class PanelPage extends Component {
   closeUploadUserModal = () => {
     this.setState({
       showUploadDocModal: false,
+    })
+  }
+
+  showDeleteFileModal = (name, id) => {
+    this.setState({
+      showFileDeleteModal: this.ownerRole ? true : false,
+      fileSetForDelete: {
+        name,
+        id,
+      },
+    })
+  }
+
+  closeFileDeleteModal = () => {
+    this.setState({
+      showFileDeleteModal: false,
     })
   }
 
@@ -274,6 +292,7 @@ class PanelPage extends Component {
       showMenu,
       showUploadDocModal,
       showLogoutModal,
+      showFileDeleteModal,
       logoutError,
       iframeSrc,
       loadingFile,
@@ -283,6 +302,7 @@ class PanelPage extends Component {
       maxValue,
       fileViewerMessage,
       activeTab,
+      fileSetForDelete,
     } = this.state
 
     const data = this.applyFilters(this.state.data || [])
@@ -360,6 +380,7 @@ class PanelPage extends Component {
               </div>
             ) : (
               <FileInfo
+                onLongPress={this.showDeleteFileModal}
                 data={data}
                 fileDownloadHandler={this.fileDownloadHandler}
               />
@@ -391,6 +412,24 @@ class PanelPage extends Component {
                 <Loader className="Panel-logout-loader" />
               </div>
             )}
+          </Modal>
+        )}
+        {showFileDeleteModal && (
+          <Modal onClose={this.closeFileDeleteModal}>
+            {
+              <div>
+                {`Are you sure you want to delete ${fileSetForDelete.name}?`}
+                <button
+                  className=""
+                  onClick={() => console.log('Delete the file')}
+                >
+                  Delete
+                </button>
+                <button className="" onClick={this.closeFileDeleteModal}>
+                  Cancel
+                </button>
+              </div>
+            }
           </Modal>
         )}
         {loadingFile && (
