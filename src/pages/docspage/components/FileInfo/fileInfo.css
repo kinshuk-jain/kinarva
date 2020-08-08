@@ -64,7 +64,15 @@
   overflow: hidden;
   white-space: nowrap;
   display: inline-block;
-  width: 30%;
+  width: 20%;
+}
+
+.File-data-year {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  display: inline-block;
+  width: 10%;
 }
 
 .File-metadata {
@@ -171,17 +179,29 @@
   }
   
   .File-data-type {
+    width: 100%;
+  }
+
+  .File-data-year {
     width: 50%;
   }
   
   .File-data-size {
     width: 40%;
+    vertical-align: top;
   }
   
   .File-data-createdBy {
     display: block;
     margin-bottom: 8px;
     width: 100%;
+  }
+
+  .File-data-year {
+    display: inline-block;
+    width: 50%;
+    margin-bottom: 8px;
+    vertical-align: top;
   }
 }
 

@@ -1,5 +1,8 @@
 import { ALLOWED_MAGIC_NUMBERS } from '../../../constants'
 
+export const getViewportWidth = () =>
+  Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
+
 export const openOrSaveFile = (chunks, chunkName, type) => {
   const blob = new Blob(chunks, { type })
   const first4Bytes = new Uint8Array((chunks[0] || []).slice(0, 4))
@@ -31,10 +34,7 @@ export const openOrSaveFile = (chunks, chunkName, type) => {
     return
   }
 
-  const viewportWidth = Math.max(
-    document.documentElement.clientWidth,
-    window.innerWidth || 0
-  )
+  const viewportWidth = getViewportWidth()
   const fileHref = window.URL.createObjectURL(blob)
   if (viewportWidth > 720) {
     return {

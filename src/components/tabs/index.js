@@ -8,4 +8,6 @@ export const TabItem = (props) => (
   </div>
 )
 
-export const Tabs = (props) => <div className="Tabs-List">{props.children}</div>
+export const Tabs = (props) => (
+  <div className={`Tabs-List ${props.className}`}>{props.children}</div>
+)

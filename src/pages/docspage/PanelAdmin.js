@@ -10,7 +10,7 @@ import { UploadDoc } from './components/UploadDoc'
 import { storage } from '../../utils/storage'
 import { LoadUser } from './components/LoadUser'
 import { FileInfo } from './components/FileInfo'
-import { openOrSaveFile, readStream } from './utils'
+import { openOrSaveFile, readStream, getViewportWidth } from './utils'
 import filtersData from './data/filters.json'
 
 import './Panel.css'
@@ -32,7 +32,8 @@ class PanelPage extends Component {
       currentValue: 0,
       maxValue: 0,
       fileViewerMessage: undefined,
-      activeTab: 0,
+      activeTab: -1,
+      activeSubFilter: -1,
     }
   }
 
@@ -134,6 +135,8 @@ class PanelPage extends Component {
   closeLoadUserModal = () => {
     this.setState({
       showLoadUserModal: false,
+      activeTab: -1,
+      activeSubFilter: -1,
     })
   }
 
@@ -237,9 +240,34 @@ class PanelPage extends Component {
     )
   }
 
+  applyFilters = () => {
+    const { activeSubFilter, activeTab, data } = this.state
+    if (activeTab === -1) {
+      return data
+    }
+    const filteredData = data.filter(
+      (obj) => obj.metadata.docType === filtersData.filters[activeTab].value
+    )
+    if (activeSubFilter === -1) {
+      return filteredData
+    }
+    return filteredData.filter(
+      (obj) =>
+        obj.metadata.subType ===
+        filtersData.filters[activeTab].subfilters[activeSubFilter].value
+    )
+  }
+
+  setActiveSubFilter = (i) => {
+    this.setState({
+      activeSubFilter: i,
+    })
+  }
+
   setActiveTab = (i) => {
     this.setState({
       activeTab: i,
+      activeSubFilter: -1,
     })
   }
 
@@ -317,6 +345,11 @@ class PanelPage extends Component {
           {showMenu && this.renderMenu()}
         </div>
         <Tabs>
+          <TabItem
+            onClick={() => this.setActiveTab(-1)}
+            key="-1"
+            label="Home"
+          />
           {filtersData.filters.map((filter, ind) => (
             <TabItem
               onClick={() => this.setActiveTab(ind)}
@@ -325,16 +358,43 @@ class PanelPage extends Component {
             />
           ))}
         </Tabs>
+        {getViewportWidth() < 720 && (
+          <Tabs className="Panel-mobileview-tabs">
+            {filtersData.filters[activeTab] && (
+              <List className="Panel-list">
+                {filtersData.filters[activeTab].subfilters.map(
+                  (subfilter, i) => (
+                    <TabItem
+                      onClick={() => this.setActiveSubFilter(i)}
+                      key={i}
+                      label={subfilter.label}
+                    />
+                  )
+                )}
+              </List>
+            )}
+          </Tabs>
+        )}
         <div className="Panel-content">
           <div className="Left-pane">
-            <List className="Panel-list">
-              {filtersData.filters[activeTab] &&
-                filtersData.filters[
-                  activeTab
-                ].subfilters.map((subfilter, i) => (
-                  <ListItem key={i}>{subfilter.label}</ListItem>
-                ))}
-            </List>
+            {filtersData.filters[activeTab] ? (
+              <List className="Panel-list">
+                {filtersData.filters[activeTab].subfilters.map(
+                  (subfilter, i) => (
+                    <ListItem
+                      onClick={() => this.setActiveSubFilter(i)}
+                      key={i}
+                    >
+                      {subfilter.label}
+                    </ListItem>
+                  )
+                )}
+              </List>
+            ) : (
+              <div className="Panel-list Panel-empty-left">
+                Go ahead and click on a tab to filter data
+              </div>
+            )}
           </div>
           <div className={`Right-pane ${data.length ? 'noBorder' : ''}`}>
             {this.isEmpty(data) ? (

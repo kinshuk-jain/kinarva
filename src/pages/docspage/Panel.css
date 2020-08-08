@@ -118,6 +118,7 @@ progress::-webkit-progress-value {
 
 .Panel-list {
   border: 1px solid #efefef;
+  border-radius: 2px;
 }
 
 .Panel-logo {
@@ -145,6 +146,16 @@ progress::-webkit-progress-value {
 
 .Panel-menu:active {
   transform: scale(0.98);
+}
+
+.Panel-empty-left {
+  padding: 5px;
+  height: 300px;
+  padding-top: 130px;
+}
+
+.Panel-mobileview-tabs {
+  background: white;
 }
 
 .Panel-menu-image {

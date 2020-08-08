@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import supportsPassive from '../../../../utils/passive-events'
-
+import filersData from '../../data/filters.json'
 import './fileInfo.css'
 
 export class FileInfo extends React.Component {
@@ -51,16 +51,12 @@ export class FileInfo extends React.Component {
   }
 
   getFileType = (type) => {
-    const docTypeObj = {
-      'audit-report': 'Audit Report',
-      'finance-report': 'Finance Report',
-      'abc-report': 'ABC Report',
-    }
-    return docTypeObj[type]
+    const filter = filersData.filters.find((filter) => filter.value === type)
+    return filter && filter.label
   }
 
   getDate = (dateStr) => {
-    return new Date(+dateStr).toUTCString()
+    return dateStr && new Date(+dateStr).toUTCString()
   }
 
   renderFile(f = {}, i) {
@@ -89,13 +85,17 @@ export class FileInfo extends React.Component {
           </span>
           <div className="File-data-type">
             <span className="File-data-label">Type</span>
-            <span title={this.getFileType(f.docType)} className="">
-              {this.getFileType(f.docType) || 'N/A'}
+            <span title={this.getFileType(f.metadata.docType)} className="">
+              {this.getFileType(f.metadata.docType) || 'N/A'}
             </span>
+          </div>
+          <div className="File-data-year">
+            <span className="File-data-label">Year</span>
+            <span title={f.createdBy}>{f.metadata.year || 'Unkown'}</span>
           </div>
           <div className="File-data-size">
             <span className="File-data-label">Size</span>
-            <span className="">{this.getFileSize(f.size)}</span>
+            <span>{this.getFileSize(f.size)}</span>
           </div>
         </div>
         <div className="File-metadata">
@@ -131,6 +131,7 @@ export class FileInfo extends React.Component {
           <span className="File-data-name">Name</span>
           <span className="File-data-createdBy">Created By</span>
           <span className="File-data-type">Type</span>
+          <span className="File-data-year">Year</span>
           <span className="File-data-size">Size</span>
         </div>
         <div className="File-data-container">

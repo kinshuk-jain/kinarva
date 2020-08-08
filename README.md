@@ -33,5 +33,4 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 ### TODOS
 
 - Allow file deletion
-- design filters in mobile view
-- filter out data on Frontend as per applied filters
+- filter by year

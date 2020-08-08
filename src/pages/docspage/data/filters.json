@@ -2,50 +2,50 @@
   "filters": [
     {
       "label": "Filter 1",
-      "value": "",
+      "value": "filter-1",
       "subfilters": [
         {
           "label": "sub filter 1",
-          "value": ""
+          "value": "sub-filter-1"
         }
       ]
     },
     {
       "label": "Filter 2",
-      "value": "",
+      "value": "filter-2",
       "subfilters": [
         {
-          "value": "",
+          "value": "sub-filter-2",
           "label": "sub filter 2"
         }
       ]
     },
     {
       "label": "Filter 3",
-      "value": "",
+      "value": "filter-3",
       "subfilters": [
         {
-          "value": "",
+          "value": "sub-filter-3",
           "label": "sub filter 3"
         }
       ]
     },
     {
       "label": "Filter 4",
-      "value": "",
+      "value": "filter-4",
       "subfilters": [
         {
-          "value": "",
+          "value": "sub-filter-4",
           "label": "sub filter 4"
         }
       ]
     },
     {
       "label": "Filter 5",
-      "value": "",
+      "value": "filter-5",
       "subfilters": [
         {
-          "value": "",
+          "value": "sub-filter-5",
           "label": "sub filter 5"
         }
       ]
