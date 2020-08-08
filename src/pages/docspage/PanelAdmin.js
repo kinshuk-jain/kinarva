@@ -60,8 +60,9 @@ class PanelPage extends Component {
         const chunks = await readStream(this.streamReader, (length) =>
           this.setState({ currentValue: length })
         )
+        console.log(openOrSaveFile(chunks, name, fileType))
         const { fileHref, hasVirus } = this.state.loadingFile
-          ? openOrSaveFile(chunks, name, fileType)
+          ? {} // openOrSaveFile(chunks, name, fileType)
           : {}
         if (!fileHref && !hasVirus) {
           this.closeIframeModal()
@@ -75,7 +76,7 @@ class PanelPage extends Component {
           })
         }
       })
-      .catch(() => {
+      .catch((e) => {
         // show error
         this.setState({
           iframeSrc: undefined,
@@ -310,7 +311,6 @@ class PanelPage extends Component {
   render() {
     const {
       loading,
-      data = [],
       showCreateUserModal,
       showMenu,
       showUploadDocModal,
@@ -327,6 +327,8 @@ class PanelPage extends Component {
       activeTab,
     } = this.state
     const { history } = this.props
+
+    const data = this.applyFilters(this.state.data || [])
 
     return loading ? (
       <Loader />
@@ -358,21 +360,17 @@ class PanelPage extends Component {
             />
           ))}
         </Tabs>
-        {getViewportWidth() < 720 && (
+        {getViewportWidth() < 720 && filtersData.filters[activeTab] && (
           <Tabs className="Panel-mobileview-tabs">
-            {filtersData.filters[activeTab] && (
-              <List className="Panel-list">
-                {filtersData.filters[activeTab].subfilters.map(
-                  (subfilter, i) => (
-                    <TabItem
-                      onClick={() => this.setActiveSubFilter(i)}
-                      key={i}
-                      label={subfilter.label}
-                    />
-                  )
-                )}
-              </List>
-            )}
+            <List className="Panel-list">
+              {filtersData.filters[activeTab].subfilters.map((subfilter, i) => (
+                <TabItem
+                  onClick={() => this.setActiveSubFilter(i)}
+                  key={i}
+                  label={subfilter.label}
+                />
+              ))}
+            </List>
           </Tabs>
         )}
         <div className="Panel-content">

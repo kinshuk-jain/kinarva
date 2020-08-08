@@ -31,7 +31,7 @@ export const openOrSaveFile = (chunks, chunkName, type) => {
 
   if (window.navigator && window.navigator.msSaveOrOpenBlob) {
     window.navigator.msSaveOrOpenBlob(blob)
-    return
+    return {}
   }
 
   const viewportWidth = getViewportWidth()

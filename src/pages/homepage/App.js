@@ -67,7 +67,7 @@ class App extends Component {
     e.preventDefault()
     const username = e.target.username.value
     const password = e.target.password.value
-    const captcha = 'acc' || window.grecaptcha.getResponse()
+    const captcha = window.grecaptcha.getResponse()
 
     // validate form
     if (!username || !password || !captcha) {

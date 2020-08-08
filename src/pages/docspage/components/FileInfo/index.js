@@ -8,10 +8,34 @@ export class FileInfo extends React.Component {
   static propTypes = {
     data: PropTypes.arrayOf(PropTypes.object),
     fileDownloadHandler: PropTypes.func.isRequired,
+    onLongPress: PropTypes.func,
   }
 
   state = {
     sticky: false,
+    mouseDownTime: 0,
+    mouseDownFile: -1,
+  }
+
+  onMouseDown = (i) => {
+    this.setState({
+      mouseDownTime: Date.now(),
+      mouseDownFile: i,
+    })
+  }
+
+  onMouseUp = () => {
+    if (
+      Date.now() - this.state.mouseDownTime > 3000 &&
+      this.state.mouseDownFile >= 0
+    ) {
+      console.log(this.props.data[this.state.mouseDownFile])
+      // TODO: prompt user to delete mouseDownFile, on yes delete it
+    }
+    this.setState({
+      mouseDownTime: 0,
+      mouseDownFile: -1,
+    })
   }
 
   componentDidMount() {
@@ -62,7 +86,12 @@ export class FileInfo extends React.Component {
   renderFile(f = {}, i) {
     const { fileDownloadHandler } = this.props
     return (
-      <div className="File-data" key={i}>
+      <div
+        className="File-data"
+        key={i}
+        onMouseDown={() => this.onMouseDown(i)}
+        onMouseUp={this.onMouseUp}
+      >
         <label className="File-info-label" htmlFor={`info-label-${i}`}>
           <span>i</span>
         </label>
