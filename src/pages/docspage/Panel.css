@@ -148,6 +148,13 @@ progress::-webkit-progress-value {
   transform: scale(0.98);
 }
 
+.Panel-delete-modal {
+  margin-top: 50px;
+  text-align: left;
+  font-size: 14px;
+  padding: 30px;
+}
+
 .Panel-empty-left {
   padding: 5px;
   height: 300px;

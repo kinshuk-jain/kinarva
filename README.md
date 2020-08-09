@@ -32,5 +32,5 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 
 ### TODOS
 
-- style delete Modal, call delete API
+- refetch currently loaded user on upload + delete for admin and delete for roles with delete access
 - filter by year

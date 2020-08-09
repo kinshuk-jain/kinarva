@@ -10,6 +10,8 @@ import { storage } from '../../utils/storage'
 import { FileInfo } from './components/FileInfo'
 import filtersData from './data/filters.json'
 import { openOrSaveFile, readStream, getViewportWidth } from './utils'
+import { Spinner } from '../../components/spinner'
+
 import './Panel.css'
 
 class PanelPage extends Component {
@@ -21,6 +23,7 @@ class PanelPage extends Component {
       showUploadDocModal: false,
       showLogoutModal: false,
       showFileDeleteModal: false,
+      deleteFileInProgress: false,
       fileSetForDelete: {},
       data: [],
       iframeSrc: '',
@@ -92,6 +95,24 @@ class PanelPage extends Component {
       currentValue: 0,
       maxValue: 0,
       fileViewerMessage: undefined,
+    })
+  }
+
+  deleteFile = async (id) => {
+    this.setState({
+      deleteFileInProgress: true
+    })
+    try {
+      await fetchApi(`/delete?q=${id}`, {
+        method: 'DELETE',
+      }).then(() => {
+        this.closeFileDeleteModal()
+      })
+    } catch (e) {
+      console.error(e)
+    }
+    this.setState({
+      deleteFileInProgress: false
     })
   }
 
@@ -303,6 +324,7 @@ class PanelPage extends Component {
       fileViewerMessage,
       activeTab,
       fileSetForDelete,
+      deleteFileInProgress,
     } = this.state
 
     const data = this.applyFilters(this.state.data || [])
@@ -417,17 +439,19 @@ class PanelPage extends Component {
         {showFileDeleteModal && (
           <Modal onClose={this.closeFileDeleteModal}>
             {
-              <div>
-                {`Are you sure you want to delete ${fileSetForDelete.name}?`}
-                <button
-                  className=""
-                  onClick={() => console.log('Delete the file')}
-                >
-                  Delete
-                </button>
-                <button className="" onClick={this.closeFileDeleteModal}>
-                  Cancel
-                </button>
+              <div className="Panel-delete-modal">
+                <span>{`Are you sure you want to delete ${fileSetForDelete.name}?`}</span>
+                <div>
+                  <button
+                    className="Panel-logout-close-button"
+                    onClick={() => this.deleteFile(fileSetForDelete.id)}
+                  >
+                    {!deleteFileInProgress ? 'Delete' : <Spinner />}
+                  </button>
+                  <button className="Panel-logout-close-button" onClick={this.closeFileDeleteModal}>
+                    Cancel
+                  </button>
+                </div>
               </div>
             }
           </Modal>

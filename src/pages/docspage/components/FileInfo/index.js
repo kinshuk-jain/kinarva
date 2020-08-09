@@ -31,7 +31,7 @@ export class FileInfo extends React.Component {
     ) {
       const f = this.props.data[this.state.mouseDownFile]
       typeof this.props.onLongPress === 'function' &&
-        this.props.onLongPress(f.docName, f.docId)
+        this.props.onLongPress(f.docName, f.docid)
     }
     this.setState({
       mouseDownTime: 0,
