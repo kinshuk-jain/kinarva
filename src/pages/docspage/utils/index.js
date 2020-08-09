@@ -43,6 +43,7 @@ export const openOrSaveFile = (chunks, chunkName, type) => {
     }
   } else {
     saveFile()
+    return {}
   }
 }
 

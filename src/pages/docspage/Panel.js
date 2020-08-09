@@ -77,6 +77,7 @@ class PanelPage extends Component {
       })
       .catch((e) => {
         // show error
+        console.error(e)
         this.setState({
           iframeSrc: undefined,
           fileViewerMessage: 'File could not be downloaded, please try again.',

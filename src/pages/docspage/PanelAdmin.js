@@ -64,9 +64,8 @@ class PanelPage extends Component {
         const chunks = await readStream(this.streamReader, (length) =>
           this.setState({ currentValue: length })
         )
-        console.log(openOrSaveFile(chunks, name, fileType))
         const { fileHref, hasVirus } = this.state.loadingFile
-          ? {} // openOrSaveFile(chunks, name, fileType)
+          ? openOrSaveFile(chunks, name, fileType)
           : {}
         if (!fileHref && !hasVirus) {
           this.closeIframeModal()
@@ -82,6 +81,7 @@ class PanelPage extends Component {
       })
       .catch((e) => {
         // show error
+        console.error(e)
         this.setState({
           iframeSrc: undefined,
           fileViewerMessage: 'File could not be downloaded, please try again.',

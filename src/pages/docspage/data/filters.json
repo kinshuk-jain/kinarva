@@ -1,52 +1,110 @@
 {
   "filters": [
     {
-      "label": "Filter 1",
-      "value": "filter-1",
+      "label": "I-T",
+      "value": "i-t",
       "subfilters": [
         {
-          "label": "sub filter 1",
-          "value": "sub-filter-1"
+          "label": "ITR",
+          "value": "i-t-r"
+        },
+        {
+          "label": "Computation",
+          "value": "computation"
+        },
+        {
+          "label": "Financial Statements",
+          "value": "financial-statements"
+        },
+        {
+          "label": "Certificates",
+          "value": "itr-certificates"
+        },
+        {
+          "label": "26AS",
+          "value": "26-as"
         }
       ]
     },
     {
-      "label": "Filter 2",
-      "value": "filter-2",
+      "label": "GST",
+      "value": "gst",
       "subfilters": [
         {
-          "value": "sub-filter-2",
-          "label": "sub filter 2"
+          "value": "regn-certificate",
+          "label": "Regn Certificates"
+        },
+        {
+          "value": "gstr-1",
+          "label": "GSTR-1"
+        },
+        {
+          "value": "gstr-3b",
+          "label": "GSTR-3B"
         }
       ]
     },
     {
-      "label": "Filter 3",
-      "value": "filter-3",
+      "label": "TDS",
+      "value": "tds",
       "subfilters": [
         {
-          "value": "sub-filter-3",
-          "label": "sub filter 3"
+          "value": "form-27a",
+          "label": "Form 27A"
+        },
+        {
+          "value": "tds-certificates",
+          "label": "TDS Certificates"
         }
       ]
     },
     {
-      "label": "Filter 4",
-      "value": "filter-4",
+      "label": "ROC",
+      "value": "roc",
       "subfilters": [
         {
-          "value": "sub-filter-4",
-          "label": "sub filter 4"
+          "value": "challan ",
+          "label": "Challans"
+        },
+        {
+          "value": "fin-statement",
+          "label": "Financial Statements"
         }
       ]
     },
     {
-      "label": "Filter 5",
-      "value": "filter-5",
+      "label": "IEC",
+      "value": "IEC",
       "subfilters": [
         {
-          "value": "sub-filter-5",
-          "label": "sub filter 5"
+          "value": "regn",
+          "label": "Registration"
+        },
+        {
+          "value": "iec-certificates",
+          "label": "Certificates"
+        }
+      ]
+    },
+    {
+      "label": "Miscellaneous",
+      "value": "miscellaneous",
+      "subfilters": [
+        {
+          "value": "form-2a",
+          "label": "Form 2A"
+        },
+        {
+          "value": "form-9",
+          "label": "Form 9"
+        },
+        {
+          "value": "form-9c",
+          "label": "Form 9C"
+        },
+        {
+          "value": "others",
+          "label": "Others"
         }
       ]
     }
