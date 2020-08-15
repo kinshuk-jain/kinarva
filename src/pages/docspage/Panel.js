@@ -101,7 +101,7 @@ class PanelPage extends Component {
 
   deleteFile = async (id) => {
     this.setState({
-      deleteFileInProgress: true
+      deleteFileInProgress: true,
     })
     try {
       await fetchApi(`/delete?q=${id}`, {
@@ -113,7 +113,7 @@ class PanelPage extends Component {
       console.error(e)
     }
     this.setState({
-      deleteFileInProgress: false
+      deleteFileInProgress: false,
     })
   }
 
@@ -351,6 +351,7 @@ class PanelPage extends Component {
             onClick={() => this.setActiveTab(-1)}
             key="-1"
             label="Home"
+            selected={activeTab === -1}
           />
           {filtersData.filters.map((filter, ind) => {
             return (
@@ -449,7 +450,10 @@ class PanelPage extends Component {
                   >
                     {!deleteFileInProgress ? 'Delete' : <Spinner />}
                   </button>
-                  <button className="Panel-logout-close-button" onClick={this.closeFileDeleteModal}>
+                  <button
+                    className="Panel-logout-close-button"
+                    onClick={this.closeFileDeleteModal}
+                  >
                     Cancel
                   </button>
                 </div>

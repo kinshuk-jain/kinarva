@@ -3,7 +3,13 @@ import './tabs.css'
 
 export const TabItem = (props) => (
   <div className="Tab-Item">
-    <input name="tabs" id={props.label} type="radio" onClick={props.onClick} />
+    <input
+      checked={props.selected}
+      name="tabs"
+      id={props.label}
+      type="radio"
+      onClick={props.onClick}
+    />
     <label htmlFor={props.label}>{props.label}</label>
   </div>
 )

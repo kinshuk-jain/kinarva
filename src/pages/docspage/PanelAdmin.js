@@ -28,6 +28,7 @@ class PanelPage extends Component {
       showLogoutModal: false,
       showFileDeleteModal: false,
       deleteFileInProgress: false,
+      currentlyLoadedUser: '',
       data: [],
       iframeSrc: '',
       fileName: '',
@@ -121,6 +122,8 @@ class PanelPage extends Component {
   }
 
   closeUploadUserModal = () => {
+    const { currentlyLoadedUser } = this.state
+    // TODO: Call load user API
     this.setState({
       showUploadDocModal: false,
     })
@@ -147,10 +150,10 @@ class PanelPage extends Component {
   }
 
   closeLoadUserModal = () => {
+    const { currentlyLoadedUser } = this.state
+    // TODO: Call load user API
     this.setState({
       showLoadUserModal: false,
-      activeTab: -1,
-      activeSubFilter: -1,
     })
   }
 
@@ -160,9 +163,12 @@ class PanelPage extends Component {
     })
   }
 
-  setData = (data) => {
+  setData = (data, user = '') => {
     this.setState({
       data,
+      activeTab: -1,
+      activeSubFilter: -1,
+      currentlyLoadedUser: user,
     })
   }
 
@@ -219,6 +225,8 @@ class PanelPage extends Component {
           this.setData(r.results)
           this.setState({
             loading: false,
+            activeTab: -1,
+            activeSubFilter: -1,
           })
         }
       })
@@ -233,7 +241,7 @@ class PanelPage extends Component {
 
   deleteFile = async (id) => {
     this.setState({
-      deleteFileInProgress: true
+      deleteFileInProgress: true,
     })
     try {
       await fetchApi(`/delete?q=${id}`, {
@@ -245,7 +253,7 @@ class PanelPage extends Component {
       console.error(e)
     }
     this.setState({
-      deleteFileInProgress: false
+      deleteFileInProgress: false,
     })
   }
 
@@ -391,6 +399,7 @@ class PanelPage extends Component {
             onClick={() => this.setActiveTab(-1)}
             key="-1"
             label="Home"
+            selected={activeTab === -1}
           />
           {filtersData.filters.map((filter, ind) => (
             <TabItem
@@ -497,7 +506,10 @@ class PanelPage extends Component {
                   >
                     {!deleteFileInProgress ? 'Delete' : <Spinner />}
                   </button>
-                  <button className="Panel-logout-close-button" onClick={this.closeFileDeleteModal}>
+                  <button
+                    className="Panel-logout-close-button"
+                    onClick={this.closeFileDeleteModal}
+                  >
                     Cancel
                   </button>
                 </div>

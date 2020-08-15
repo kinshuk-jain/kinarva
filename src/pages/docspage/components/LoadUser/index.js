@@ -41,7 +41,7 @@ export class LoadUser extends React.Component {
     })
       .then((r) => {
         if (this._isMounted) {
-          this.props.setData(r.results)
+          this.props.setData(r.results, username)
           this.props.onClose()
         }
       })

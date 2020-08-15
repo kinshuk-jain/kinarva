@@ -32,5 +32,5 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 
 ### TODOS
 
-- refetch currently loaded user on upload + delete for admin and delete for roles with delete access
+- refetch currently loaded user on upload
 - filter by year

@@ -230,7 +230,7 @@ export class UploadDoc extends React.Component {
   }
 
   yearValidation = (e) => {
-    if (!/^[0-9-]+$/.test(e.target.value)) return
+    if (!/^[0-9-]*$/.test(e.target.value)) return
     this.setState({
       yearValue: e.target.value,
     })
