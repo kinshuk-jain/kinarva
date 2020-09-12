@@ -32,5 +32,4 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 
 ### TODOS
 
-- refetch currently loaded user on upload
 - filter by year

@@ -51,6 +51,27 @@ class PanelPage extends Component {
     return true
   }
 
+  loadUser = (username) => {
+    !!username && fetchApi('/load-user?q=0', {
+      method: 'POST',
+      body: JSON.stringify({
+        username,
+      }),
+    })
+      .then((r) => {
+        if (this._isMounted) {
+          this.setData(r.results, username)
+        }
+      })
+      .catch(() => {
+        this._isMounted &&
+          this.setState({
+            loading: false,
+            error: 'Could not load user. Please try again',
+          })
+      })
+  }
+
   fileDownloadHandler = (docid, name, size) => {
     this.setState({
       loadingFile: true,
@@ -123,7 +144,7 @@ class PanelPage extends Component {
 
   closeUploadUserModal = () => {
     const { currentlyLoadedUser } = this.state
-    // TODO: Call load user API
+    this.loadUser(currentlyLoadedUser)
     this.setState({
       showUploadDocModal: false,
     })
@@ -151,7 +172,7 @@ class PanelPage extends Component {
 
   closeLoadUserModal = () => {
     const { currentlyLoadedUser } = this.state
-    // TODO: Call load user API
+    this.loadUser(currentlyLoadedUser)
     this.setState({
       showLoadUserModal: false,
     })
