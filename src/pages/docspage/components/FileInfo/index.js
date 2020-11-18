@@ -11,32 +11,12 @@ export class FileInfo extends React.Component {
     onLongPress: PropTypes.func,
   }
 
-  state = {
-    sticky: false,
-    mouseDownTime: 0,
-    mouseDownFile: -1,
-  }
-
-  onMouseDown = (i) => {
-    this.setState({
-      mouseDownTime: Date.now(),
-      mouseDownFile: i,
-    })
-  }
-
-  onMouseUp = () => {
-    if (
-      Date.now() - this.state.mouseDownTime > 3000 &&
-      this.state.mouseDownFile >= 0
-    ) {
-      const f = this.props.data[this.state.mouseDownFile]
-      typeof this.props.onLongPress === 'function' &&
-        this.props.onLongPress(f.docName, f.docid)
+  constructor(props) {
+    super(props)
+    this.state = {
+      data: props.data,
+      sticky: false,
     }
-    this.setState({
-      mouseDownTime: 0,
-      mouseDownFile: -1,
-    })
   }
 
   componentDidMount() {
@@ -90,8 +70,6 @@ export class FileInfo extends React.Component {
       <div
         className="File-data"
         key={i}
-        onMouseDown={() => this.onMouseDown(i)}
-        onMouseUp={this.onMouseUp}
       >
         <label className="File-info-label" htmlFor={`info-label-${i}`}>
           <span>i</span>
@@ -104,6 +82,13 @@ export class FileInfo extends React.Component {
         <div
           style={{ cursor: 'pointer' }}
           onClick={() => fileDownloadHandler(f.docid, f.docName, +f.size)}
+          onContextMenu={(e) => {
+            if (e.type === 'contextmenu') {
+              e.preventDefault()
+              typeof this.props.onLongPress === 'function' &&
+              this.props.onLongPress(f.docName, f.docid)
+            }
+          }}
         >
           <span className="File-data-label">Name</span>
           <span title={f.docName} className="File-data-name">
@@ -153,15 +138,38 @@ export class FileInfo extends React.Component {
   }
 
   render() {
-    const { sticky } = this.state
-    const { data = [] } = this.props
+    const { sticky, data = [] } = this.state
     return (
       <div className="File-container">
         <div className={`File-data-title ${sticky ? 'sticky' : ''}`}>
-          <span className="File-data-name">Name</span>
+          <span
+            className="File-data-name"
+            onClick={() =>
+              {data.sort((a, b) => {
+                if (a.docName < b.docName) return -1
+                if (a.docName > b.docName) return 1
+                return 0
+              })
+              this.setState({data})
+            }}
+          >
+            Name
+          </span>
           <span className="File-data-createdBy">Created By</span>
           <span className="File-data-type">Type</span>
-          <span className="File-data-year">Year</span>
+          <span
+            className="File-data-year"
+            onClick={() =>
+              {data.sort((a, b) => {
+                const yearA = parseInt((a.metadata.year || '').split('-')[0])
+                const yearB = parseInt((b.metadata.year || '').split('-')[0])
+                return yearA - yearB
+              })
+              this.setState({data})
+            }}
+          >
+            Year
+          </span>
           <span className="File-data-size">Size</span>
         </div>
         <div className="File-data-container">

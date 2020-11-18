@@ -108,7 +108,7 @@ export class UploadDoc extends React.Component {
             filesUploaded: [],
             error: '',
             uploadResponses: Array(MAX_UPLOADABLE_FILES).fill(undefined),
-            activeFilter: -1,
+            // activeFilter: -1,
             yearValue: '',
           })
         setTimeout(() => {
@@ -230,7 +230,7 @@ export class UploadDoc extends React.Component {
   }
 
   yearValidation = (e) => {
-    if (!/^[0-9-]*$/.test(e.target.value)) return
+    if (!/^[0-9-]{0,9}$/.test(e.target.value)) return
     this.setState({
       yearValue: e.target.value,
     })

@@ -43,16 +43,21 @@ export class CreateUser extends React.Component {
     }
   }
 
+  validateUsername = (name) => {
+    return /^[a-zA-Z_0-9-]{3,}$/.test(name)
+  }
+
   createUserHandler = (e) => {
     e.preventDefault()
     const name = e.target.name.value
     const username = e.target.username.value
+    const usernameError = !this.validateUsername(username)
     const email = e.target.email.value
     const hasUpload = e.target.hasUpload.checked
-    if (!username || !name || !email) {
+    if (usernameError || !name || !email) {
       this.setState({
         noEmail: email ? false : true,
-        noUsername: username ? false : true,
+        noUsername: usernameError,
         noName: name ? false : true,
       })
       return

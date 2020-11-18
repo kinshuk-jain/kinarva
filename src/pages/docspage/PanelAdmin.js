@@ -52,24 +52,25 @@ class PanelPage extends Component {
   }
 
   loadUser = (username) => {
-    !!username && fetchApi('/load-user?q=0', {
-      method: 'POST',
-      body: JSON.stringify({
-        username,
-      }),
-    })
-      .then((r) => {
-        if (this._isMounted) {
-          this.setData(r.results, username)
-        }
+    !!username &&
+      fetchApi('/load-user?q=0', {
+        method: 'POST',
+        body: JSON.stringify({
+          username,
+        }),
       })
-      .catch(() => {
-        this._isMounted &&
-          this.setState({
-            loading: false,
-            error: 'Could not load user. Please try again',
-          })
-      })
+        .then((r) => {
+          if (this._isMounted) {
+            this.setData(r.results, username)
+          }
+        })
+        .catch(() => {
+          this._isMounted &&
+            this.setState({
+              loading: false,
+              error: 'Could not load user. Please try again',
+            })
+        })
   }
 
   fileDownloadHandler = (docid, name, size) => {
@@ -199,7 +200,11 @@ class PanelPage extends Component {
     })
   }
 
-  closeFileDeleteModal = () => {
+  closeFileDeleteModal = (loadAgain = false) => {
+    if (loadAgain) {
+      const { currentlyLoadedUser } = this.state
+      this.loadUser(currentlyLoadedUser)
+    }
     this.setState({
       showFileDeleteModal: false,
     })
@@ -268,7 +273,7 @@ class PanelPage extends Component {
       await fetchApi(`/delete?q=${id}`, {
         method: 'DELETE',
       }).then(() => {
-        this.closeFileDeleteModal()
+        this.closeFileDeleteModal(true)
       })
     } catch (e) {
       console.error(e)

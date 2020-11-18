@@ -32,4 +32,12 @@ You don’t have to ever use `eject`. The curated feature set is suitable for sm
 
 ### TODOS
 
-- filter by year
+- Delete button
+- add feature to send email when doc uploaded
+- add forget password
+- create apps
+- create registration for new users
+- load filters on fly
+- admin creates filters on first login
+- add tutorial
+- add billing

@@ -41,6 +41,7 @@
   white-space: nowrap;
   display: inline-block;
   padding-right: 5px;
+  cursor: pointer;
 }
 
 .File-data-type {
@@ -73,6 +74,7 @@
   white-space: nowrap;
   display: inline-block;
   width: 10%;
+  cursor: pointer;
 }
 
 .File-metadata {

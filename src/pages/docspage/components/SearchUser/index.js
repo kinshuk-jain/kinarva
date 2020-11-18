@@ -62,11 +62,11 @@ export class SearchUser extends React.Component {
 
   onChangeHandler = (e) => {
     const prefix = e.target.value.trim()
-    const { userList, fetchedWithPrefix } = this.state
+    const { filteredList, fetchedWithPrefix } = this.state
 
     if (
       prefix.length >= 3 &&
-      (!userList.length || !prefix.startsWith(fetchedWithPrefix))
+      (!filteredList.length || !prefix.startsWith(fetchedWithPrefix))
     ) {
       this.setState({
         loading: true,
